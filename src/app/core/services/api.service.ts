@@ -88,9 +88,9 @@ export class ApiService {
   }
 
   // File upload request
-  uploadFile(endpoint: string, file: File, additionalData?: any): Observable<ApiResponse<any>> {
+  uploadFile(endpoint: string, file: File, additionalData?: any, fileFieldName: string = 'file'): Observable<ApiResponse<any>> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append(fileFieldName, file);
     
     if (additionalData) {
       Object.keys(additionalData).forEach(key => {

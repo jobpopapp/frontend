@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ import { Company } from '../../../core/interfaces';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit {
+  @Output() navigationChange = new EventEmitter<string>();
+  
   currentCompany: Company | null = null;
   isJobsMenuOpen = false;
   subscriptionStatus: 'active' | 'expired' | 'none' = 'none';
@@ -119,5 +121,34 @@ export class SidebarComponent implements OnInit {
         this.daysLeft = 0;
       }
     });
+  }
+
+  // Navigation methods for SPA
+  navigateTo(view: string): void {
+    this.navigationChange.emit(view);
+  }
+
+  navigateToOverview(): void {
+    this.navigateTo('overview');
+  }
+
+  navigateToJobs(): void {
+    this.navigateTo('jobs');
+  }
+
+  navigateToJobForm(): void {
+    this.navigateTo('job-form');
+  }
+
+  navigateToSubscription(): void {
+    this.navigateTo('subscription');
+  }
+
+  navigateToProfile(): void {
+    this.navigateTo('profile');
+  }
+
+  navigateToVerification(): void {
+    this.navigateTo('verification');
   }
 }

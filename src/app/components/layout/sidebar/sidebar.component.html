@@ -18,9 +18,9 @@
       <!-- Dashboard -->
       <li class="nav-item mb-1">
         <a
-          routerLink="/dashboard"
-          routerLinkActive="active"
+          href="#"
           class="nav-link d-flex align-items-center text-light"
+          (click)="navigateToOverview(); $event.preventDefault()"
         >
           <i class="bi bi-speedometer2 me-3"></i>
           <span>Dashboard</span>
@@ -48,16 +48,20 @@
         <div class="submenu" [class.show]="isJobsMenuOpen">
           <ul class="nav flex-column ms-4">
             <li class="nav-item">
-              <a routerLink="/jobs" routerLinkActive="active" class="nav-link">
+              <a
+                href="#"
+                class="nav-link"
+                (click)="navigateToJobs(); $event.preventDefault()"
+              >
                 <i class="bi bi-list me-2"></i>
                 All Jobs
               </a>
             </li>
             <li class="nav-item">
               <a
-                routerLink="/jobs/new"
-                routerLinkActive="active"
+                href="#"
                 class="nav-link"
+                (click)="navigateToJobForm(); $event.preventDefault()"
               >
                 <i class="bi bi-plus-circle me-2"></i>
                 Post New Job
@@ -70,9 +74,9 @@
       <!-- Subscription -->
       <li class="nav-item mb-1">
         <a
-          routerLink="/subscription"
-          routerLinkActive="active"
+          href="#"
           class="nav-link d-flex align-items-center"
+          (click)="navigateToSubscription(); $event.preventDefault()"
         >
           <i class="bi bi-credit-card me-3"></i>
           <span>Subscription</span>

@@ -6,11 +6,12 @@ import { JobService } from '../../core/services/job.service';
 import { SubscriptionService } from '../../core/services/subscription.service';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
+import { AccountVerificationComponent } from '../../components/account-verification/account-verification.component';
 import { Company, Job, DashboardStats } from '../../core/interfaces';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, TitleCasePipe, NavbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, TitleCasePipe, NavbarComponent, SidebarComponent, AccountVerificationComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -28,6 +29,9 @@ export class DashboardComponent implements OnInit {
   subscriptionDaysLeft = 0;
   isVerified = false;
   isLoading = true;
+
+  // Navigation state for dynamic content loading
+  currentView: string = 'overview'; // overview, jobs, verification, subscription, profile
 
   constructor(
     private authService: AuthService,
@@ -133,8 +137,33 @@ export class DashboardComponent implements OnInit {
   }
 
   openUploadModal(): void {
-    // TODO: Implement file upload modal for certificate
-    alert('Certificate upload feature will be implemented in the next phase');
+    this.navigateToView('verification');
+  }
+
+  // Navigation methods for dynamic content loading
+  navigateToView(view: string): void {
+    this.currentView = view;
+  }
+
+  onVerificationComplete(): void {
+    this.currentView = 'overview';
+    this.isVerified = true;
+    
+    // Refresh company data from the auth service
+    this.authService.getProfile().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.isVerified = response.data.is_verified || false;
+          this.currentCompany = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error refreshing company data:', error);
+      }
+    });
+    
+    // Refresh dashboard data
+    this.loadDashboardData();
   }
 
   refreshDashboard(): void {
