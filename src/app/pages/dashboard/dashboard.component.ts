@@ -33,6 +33,62 @@ export class DashboardComponent implements OnInit {
   // Navigation state for dynamic content loading
   currentView: string = 'overview'; // overview, jobs, verification, subscription, profile
 
+  // Subscription Plans Data
+  subscriptionPlans = [
+    {
+      id: 'per_job',
+      name: 'Per Job',
+      price: 30,
+      description: 'Perfect for occasional hiring needs',
+      priceText: '$30',
+      durationText: 'per job posting',
+      features: [
+        'Post 1 job',
+        'Job visible for 30 days',
+        'Basic support',
+        'Standard job categories',
+        'Email notifications'
+      ]
+    },
+    {
+      id: 'monthly',
+      name: 'Monthly',
+      price: 50,
+      description: 'Great for growing companies',
+      priceText: '$50',
+      durationText: 'per month',
+      popular: true,
+      features: [
+        'Unlimited job postings',
+        'Priority job placement',
+        'Advanced analytics',
+        'Premium support',
+        'Custom job categories',
+        'Extended job visibility',
+        'Bulk job management'
+      ]
+    },
+    {
+      id: 'annual',
+      name: 'Annual',
+      price: 500,
+      description: 'Best value for established companies',
+      priceText: '$500',
+      durationText: 'per year',
+      features: [
+        'Everything in Monthly',
+        '2 months free (save $100)',
+        'Dedicated account manager',
+        'Custom branding options',
+        'Priority customer support',
+        'Advanced reporting',
+        'API access (coming soon)'
+      ]
+    }
+  ];
+
+  selectedPlan: string | null = null;
+
   constructor(
     private authService: AuthService,
     private jobService: JobService,
@@ -168,5 +224,37 @@ export class DashboardComponent implements OnInit {
 
   refreshDashboard(): void {
     this.loadDashboardData();
+  }
+
+  // Subscription Plans Methods
+  subscribeToPlan(plan: any): void {
+    if (this.isLoading) return;
+    
+    this.isLoading = true;
+    this.selectedPlan = plan.id;
+
+    // Prepare payment data for Pesapal
+    const paymentData = {
+      plan_type: plan.id as 'monthly' | 'annual' | 'per_job',
+      amount: plan.price,
+      currency: 'USD'
+    };
+
+    // Call subscription service to initiate Pesapal payment
+    this.subscriptionService.initiatePayment(paymentData)
+      .subscribe({
+        next: (response: any) => {
+          // Redirect to Pesapal payment page
+          if (response.data?.payment_url) {
+            window.location.href = response.data.payment_url;
+          }
+        },
+        error: (error: any) => {
+          console.error('Payment initiation failed:', error);
+          this.isLoading = false;
+          this.selectedPlan = null;
+          // Show error message to user
+        }
+      });
   }
 }
