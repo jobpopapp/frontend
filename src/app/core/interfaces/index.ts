@@ -1,0 +1,149 @@
+// Authentication interfaces
+export interface Company {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  country: string;
+  is_verified: boolean;
+  certificate_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  phone: string;
+  country: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  company?: Company;
+  token?: string;
+}
+
+// Job interfaces
+export interface Job {
+  id: string;
+  title: string;
+  description: string;
+  requirements: string;
+  location: string;
+  salary_range: string;
+  job_type: 'full-time' | 'part-time' | 'contract' | 'internship';
+  category: string;
+  company_id: string;
+  is_foreign: boolean;
+  email?: string;
+  phone?: string;
+  whatsapp?: string;
+  application_link?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface JobCreateRequest {
+  title: string;
+  description: string;
+  requirements: string;
+  location: string;
+  salary_range: string;
+  job_type: 'full-time' | 'part-time' | 'contract' | 'internship';
+  category: string;
+  is_foreign: boolean;
+  email?: string;
+  phone?: string;
+  whatsapp?: string;
+  application_link?: string;
+}
+
+export interface JobCategory {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+// Subscription interfaces
+export interface Subscription {
+  id: string;
+  company_id: string;
+  plan_type: 'monthly' | 'annual' | 'per_job';
+  start_date: string;
+  end_date: string;
+  is_active: boolean;
+  auto_renew: boolean;
+  pesapal_txn_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  duration_days?: number;
+  features: string[];
+  popular?: boolean;
+}
+
+export interface PaymentRequest {
+  plan_type: 'monthly' | 'annual' | 'per_job';
+  amount: number;
+  currency: string;
+}
+
+// API Response interfaces
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
+  error?: string;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// Dashboard interfaces
+export interface DashboardStats {
+  totalJobs: number;
+  activeJobs: number;
+  expiredJobs: number;
+  totalApplications: number;
+  subscriptionStatus: 'active' | 'expired' | 'none';
+  subscriptionDaysLeft?: number;
+}
+
+// Upload interfaces
+export interface FileUploadResponse {
+  success: boolean;
+  message: string;
+  url?: string;
+  error?: string;
+}
+
+// Form validation
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export interface FormErrors {
+  [key: string]: string;
+}
