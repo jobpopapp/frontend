@@ -405,13 +405,16 @@
     right: 0;
     height: 1px;
     background: #374151;
+    z-index: 1;
   }
   
   span {
+    position: relative;
     background: #1a1a1a;
     padding: 0 1rem;
     color: #9ca3af;
     font-size: 0.875rem;
+    z-index: 2;
   }
 }
 
