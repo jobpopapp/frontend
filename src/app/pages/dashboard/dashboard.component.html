@@ -9,18 +9,27 @@
 
     <!-- Dashboard Content -->
     <div class="container-fluid p-4">
-      <!-- Welcome Section -->
+      <!-- Account Verification Section -->
       <div class="row mb-4">
         <div class="col-12">
-          <div class="card bg-primary text-light fade-in-up">
-            <div class="card-body">
-              <h1 class="h2 fw-bold mb-2 text-light">
-                Welcome back, {{ currentCompany?.name }}!
-              </h1>
-              <p class="mb-0 opacity-75">
-                Manage your job postings and track applications from your
-                dashboard with our Adobe-inspired interface.
-              </p>
+          <div class="alert alert-warning border-0 shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+              <div class="flex-grow-1">
+                <h6 class="alert-heading mb-1">
+                  Account Verification Required
+                </h6>
+                <p class="mb-2">
+                  Please upload your Certificate of Incorporation to verify your
+                  company account.
+                </p>
+                <button
+                  class="btn btn-warning btn-sm"
+                  (click)="openUploadModal()"
+                >
+                  <i class="bi bi-upload me-2"></i>Upload Certificate
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -87,16 +96,36 @@
         <div class="col-lg-3 col-md-6 mb-3">
           <div class="card stat-card slide-in-right">
             <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div
-                  class="stat-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3 me-3"
+              <div *ngIf="subscriptionStatus === 'active'" class="text-center">
+                <i class="bi bi-check-circle-fill text-success fs-2 mb-2"></i>
+                <h6 class="text-success">Active Plan</h6>
+                <p class="text-muted small mb-0">
+                  {{ subscriptionDaysLeft }} days remaining
+                </p>
+              </div>
+
+              <div *ngIf="subscriptionStatus === 'expired'" class="text-center">
+                <i
+                  class="bi bi-exclamation-triangle-fill text-warning fs-2 mb-2"
+                ></i>
+                <h6 class="text-warning">Plan Expired</h6>
+                <p class="text-muted small mb-3">
+                  Renew to continue posting jobs
+                </p>
+                <a routerLink="/subscription" class="btn btn-warning btn-sm"
+                  >Renew Now</a
                 >
-                  <i class="bi bi-clock fs-4"></i>
-                </div>
-                <div>
-                  <h3 class="fw-bold mb-1">{{ subscriptionDaysLeft }}</h3>
-                  <p class="text-muted mb-0 small">Days Left</p>
-                </div>
+              </div>
+
+              <div *ngIf="subscriptionStatus === 'none'" class="text-center">
+                <i class="bi bi-info-circle-fill text-info fs-2 mb-2"></i>
+                <h6 class="text-info">No Active Plan</h6>
+                <p class="text-muted small mb-3">
+                  Choose a plan to start posting jobs
+                </p>
+                <a routerLink="/subscription" class="btn btn-primary btn-sm"
+                  >Choose Plan</a
+                >
               </div>
             </div>
           </div>
@@ -165,8 +194,8 @@
         </div>
 
         <div class="col-md-4">
-          <!-- Quick Actions & Subscription Status -->
-          <div class="card border-0 shadow-sm mb-3">
+          <!-- Quick Actions -->
+          <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-0 fw-semibold">Quick Actions</h5>
             </div>
@@ -181,72 +210,6 @@
                 <a routerLink="/subscription" class="btn btn-outline-secondary">
                   <i class="bi bi-credit-card me-2"></i>Subscription
                 </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Subscription Status -->
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-0 fw-semibold">Subscription Status</h5>
-            </div>
-            <div class="card-body">
-              <div *ngIf="subscriptionStatus === 'active'" class="text-center">
-                <i class="bi bi-check-circle-fill text-success fs-2 mb-2"></i>
-                <h6 class="text-success">Active Plan</h6>
-                <p class="text-muted small mb-0">
-                  {{ subscriptionDaysLeft }} days remaining
-                </p>
-              </div>
-
-              <div *ngIf="subscriptionStatus === 'expired'" class="text-center">
-                <i
-                  class="bi bi-exclamation-triangle-fill text-warning fs-2 mb-2"
-                ></i>
-                <h6 class="text-warning">Plan Expired</h6>
-                <p class="text-muted small mb-3">
-                  Renew to continue posting jobs
-                </p>
-                <a routerLink="/subscription" class="btn btn-warning btn-sm"
-                  >Renew Now</a
-                >
-              </div>
-
-              <div *ngIf="subscriptionStatus === 'none'" class="text-center">
-                <i class="bi bi-info-circle-fill text-info fs-2 mb-2"></i>
-                <h6 class="text-info">No Active Plan</h6>
-                <p class="text-muted small mb-3">
-                  Choose a plan to start posting jobs
-                </p>
-                <a routerLink="/subscription" class="btn btn-primary btn-sm"
-                  >Choose Plan</a
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verification Status (if not verified) -->
-      <div *ngIf="!isVerified" class="row">
-        <div class="col-12">
-          <div class="alert alert-warning border-0 shadow-sm" role="alert">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
-              <div class="flex-grow-1">
-                <h6 class="alert-heading mb-1">
-                  Account Verification Required
-                </h6>
-                <p class="mb-2">
-                  Please upload your Certificate of Incorporation to verify your
-                  company account.
-                </p>
-                <button
-                  class="btn btn-warning btn-sm"
-                  (click)="openUploadModal()"
-                >
-                  <i class="bi bi-upload me-2"></i>Upload Certificate
-                </button>
               </div>
             </div>
           </div>

@@ -97,11 +97,10 @@ export class SubscriptionService {
 
   // Get subscription status
   getSubscriptionStatus(): Observable<ApiResponse<{
-    hasActiveSubscription: boolean;
-    currentPlan?: string;
-    daysLeft?: number;
-    expiryDate?: string;
-    isExpired: boolean;
+    subscription?: Subscription;
+    status: string;
+    isActive: boolean;
+    daysRemaining: number;
   }>> {
     return this.apiService.get('/subscription/status');
   }

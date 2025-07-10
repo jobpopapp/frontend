@@ -82,9 +82,21 @@ export class DashboardComponent implements OnInit {
     this.subscriptionService.getSubscriptionStatus().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.subscriptionStatus = response.data.hasActiveSubscription ? 'active' : 
-                                   response.data.isExpired ? 'expired' : 'none';
-          this.subscriptionDaysLeft = response.data.daysLeft || 0;
+          // Map the correct field names from backend
+          const isActive = response.data.isActive || false;
+          const daysRemaining = response.data.daysRemaining || 0;
+          const status = response.data.status || 'none';
+          
+          // Determine subscription status based on backend response
+          if (isActive && status === 'active') {
+            this.subscriptionStatus = 'active';
+          } else if (status === 'expired') {
+            this.subscriptionStatus = 'expired';
+          } else {
+            this.subscriptionStatus = 'none';
+          }
+          
+          this.subscriptionDaysLeft = daysRemaining;
           this.dashboardStats.subscriptionStatus = this.subscriptionStatus;
         }
       },
