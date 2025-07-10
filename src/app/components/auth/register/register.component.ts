@@ -36,7 +36,7 @@ export function passwordMatchValidator(): ValidatorFn {
   selector: 'app-register',
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register-adobe.component.scss'
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
@@ -44,6 +44,7 @@ export class RegisterComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   showPassword = false;
+  showConfirmPassword = false;
   
   countries = [
     { code: 'US', name: 'United States' },
@@ -156,6 +157,14 @@ export class RegisterComponent implements OnInit {
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   isFieldInvalid(fieldName: string): boolean {

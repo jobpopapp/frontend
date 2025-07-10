@@ -1,0 +1,158 @@
+<div class="homepage-container">
+  <!-- Hero Section with Parallax -->
+  <section
+    class="hero-section"
+    [style.transform]="'translateY(' + scrollY * 0.5 + 'px)'"
+  >
+    <div class="hero-background"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="logo-container">
+        <img src="/logo.png" alt="JobPop Logo" class="main-logo" />
+        <h1 class="brand-title">JobPop</h1>
+        <p class="brand-subtitle">
+          Connecting great companies with amazing talent
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Actions Section -->
+  <section class="actions-section">
+    <div class="actions-container">
+      <h2 class="actions-title">Get Started with JobPop</h2>
+      <p class="actions-subtitle">
+        Choose your path: Hire talent as a company or find jobs as a candidate
+      </p>
+
+      <div class="action-cards">
+        <!-- Login Card -->
+        <div class="action-card">
+          <div class="card-icon">
+            <i class="bi bi-box-arrow-in-right"></i>
+          </div>
+          <h3 class="card-title">Company Sign In</h3>
+          <p class="card-description">
+            <span class="highlight-red"
+              >Access your hiring company dashboard</span
+            >
+            to manage job postings and applications
+          </p>
+          <button routerLink="/login" class="action-btn primary-btn">
+            Company Login
+          </button>
+        </div>
+
+        <!-- Register Card -->
+        <div class="action-card">
+          <div class="card-icon">
+            <i class="bi bi-building-add"></i>
+          </div>
+          <h3 class="card-title">Register Your Company</h3>
+          <p class="card-description">
+            <span class="highlight-green">Start hiring today!</span> Create your
+            company account and post unlimited jobs
+          </p>
+          <button routerLink="/register" class="action-btn secondary-btn">
+            Create Company Account
+          </button>
+        </div>
+
+        <!-- Download App Card -->
+        <div class="action-card">
+          <div class="card-icon">
+            <i class="bi bi-phone"></i>
+          </div>
+          <h3 class="card-title">Job Seeker App</h3>
+          <p class="card-description">
+            <span class="highlight-blue">Looking for work?</span> Download our
+            mobile app to browse and apply for jobs
+          </p>
+          <button (click)="openDownloadModal()" class="action-btn tertiary-btn">
+            Download Job Seeker App
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="features-container">
+      <h2 class="features-title">Why Choose JobPop?</h2>
+      <div class="features-grid">
+        <div class="feature-item">
+          <i class="bi bi-briefcase-fill"></i>
+          <h3>Post Unlimited Jobs</h3>
+          <p>
+            Create and manage unlimited job postings with our intuitive platform
+          </p>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-people-fill"></i>
+          <h3>Access Top Talent</h3>
+          <p>
+            Connect with qualified candidates from our extensive talent pool
+          </p>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-graph-up-arrow"></i>
+          <h3>Track Performance</h3>
+          <p>
+            Monitor your hiring metrics and optimize your recruitment process
+          </p>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-shield-check"></i>
+          <h3>Secure & Reliable</h3>
+          <p>Your data is protected with enterprise-grade security measures</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="homepage-footer">
+    <div class="footer-container">
+      <p>&copy; 2025 JobPop. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- Download Modal -->
+<div
+  class="modal-overlay"
+  *ngIf="showDownloadModal"
+  (click)="closeDownloadModal()"
+>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Download JobPop Job Seeker App</h3>
+      <button class="modal-close" (click)="closeDownloadModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Looking for your next job? Download the JobPop mobile app to browse
+        thousands of job opportunities and apply instantly:
+      </p>
+      <div class="download-options">
+        <button class="download-btn" (click)="downloadFromPlayStore()">
+          <img src="/google.png" alt="Google Play" class="store-icon" />
+          <div class="download-text">
+            <span class="download-label">Get it on</span>
+            <span class="store-name">Google Play</span>
+          </div>
+        </button>
+        <button class="download-btn" (click)="downloadFromAppStore()">
+          <i class="bi bi-apple" style="font-size: 2rem; color: #000"></i>
+          <div class="download-text">
+            <span class="download-label">Download on the</span>
+            <span class="store-name">App Store</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

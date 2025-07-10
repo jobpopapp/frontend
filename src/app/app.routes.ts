@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -8,7 +9,8 @@ import { SubscriptionPlansComponent } from './pages/subscription/subscription-pl
 
 export const routes: Routes = [
   // Public routes
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomepageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   
@@ -20,5 +22,5 @@ export const routes: Routes = [
   { path: 'subscription', component: SubscriptionPlansComponent },
   
   // Wildcard route - should be last
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/home' }
 ];

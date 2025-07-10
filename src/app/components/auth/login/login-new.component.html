@@ -1,15 +1,13 @@
-<div class="adobe-login-layout">
+<div class="adobe-login-layout"></div>
   <!-- Left Side - Hero Image -->
   <div class="hero-section">
     <div class="hero-overlay">
       <div class="hero-content">
         <div class="hero-logo">
           <h1 class="brand-logo">JobPop</h1>
-          <p class="brand-tagline">
-            Connecting great companies with amazing talent
-          </p>
+          <p class="brand-tagline">Connecting great companies with amazing talent</p>
         </div>
-
+        
         <div class="hero-features">
           <div class="feature-highlight">
             <i class="bi bi-briefcase-fill"></i>
@@ -26,7 +24,7 @@
         </div>
       </div>
     </div>
-
+    
     <!-- Background Image -->
     <div class="hero-background"></div>
   </div>
@@ -34,89 +32,64 @@
   <!-- Right Side - Login Form -->
   <div class="form-section">
     <div class="form-container">
-      <!-- Home Button -->
-      <div class="home-nav">
-        <button routerLink="/home" class="home-btn" title="Back to Home">
-          <i class="bi bi-house-fill"></i>
-          <span>Home</span>
-        </button>
-      </div>
-
       <!-- Header -->
       <div class="form-header">
-        <h2 class="form-title">LOGIN</h2>
+        <h2 class="form-title">Welcome back</h2>
         <p class="form-subtitle">Sign in to your company account</p>
       </div>
 
       <!-- Login Form -->
-      <form
-        [formGroup]="loginForm"
-        (ngSubmit)="onSubmit()"
-        novalidate
-        class="login-form"
-      >
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="login-form">
         <!-- Email Field -->
         <div class="form-group">
-          <div class="floating-input">
-            <input
-              type="email"
-              id="email"
-              formControlName="email"
-              class="form-input"
-              [class.error]="isFieldInvalid('email')"
-              placeholder=" "
-              autocomplete="email"
-            />
-            <label for="email" class="floating-label">Email address</label>
-          </div>
+          <label for="email" class="form-label">Email address</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-input"
+            [class.error]="isFieldInvalid('email')"
+            placeholder="Enter your email"
+            autocomplete="email"
+          />
           <div class="error-message" *ngIf="isFieldInvalid('email')">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']"
-              >Email is required</span
-            >
-            <span *ngIf="loginForm.get('email')?.errors?.['email']"
-              >Please enter a valid email</span
-            >
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
           </div>
         </div>
 
         <!-- Password Field -->
         <div class="form-group">
-          <div class="floating-input password-input-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-input-group">
             <input
               [type]="showPassword ? 'text' : 'password'"
               id="password"
               formControlName="password"
               class="form-input"
               [class.error]="isFieldInvalid('password')"
-              placeholder=" "
+              placeholder="Enter your password"
               autocomplete="current-password"
             />
-            <label for="password" class="floating-label">Password</label>
             <button
               type="button"
               class="password-toggle"
               (click)="togglePasswordVisibility()"
-              [attr.aria-label]="
-                showPassword ? 'Hide password' : 'Show password'
-              "
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
             >
               <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
           </div>
           <div class="error-message" *ngIf="isFieldInvalid('password')">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']"
-              >Password is required</span
-            >
-            <span *ngIf="loginForm.get('password')?.errors?.['minlength']"
-              >Password must be at least 6 characters</span
-            >
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
           </div>
         </div>
 
         <!-- Remember Me -->
         <div class="form-options">
           <label class="checkbox-label">
-            <input type="checkbox" class="checkbox-input" />
+            <input type="checkbox" class="checkbox-input">
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">Keep me signed in</span>
           </label>
@@ -130,7 +103,7 @@
           [disabled]="loginForm.invalid || isLoading"
         >
           <span *ngIf="isLoading" class="loading-spinner"></span>
-          <span>{{ isLoading ? "Signing in..." : "Sign in" }}</span>
+          <span>{{ isLoading ? 'Signing in...' : 'Sign in' }}</span>
         </button>
 
         <!-- Error Message -->
@@ -157,7 +130,9 @@
 
       <!-- Footer -->
       <div class="form-footer">
-        <p class="footer-text">© 2025 JobPop. All rights reserved.</p>
+        <p class="footer-text">
+          © 2025 JobPop. All rights reserved.
+        </p>
       </div>
     </div>
   </div>

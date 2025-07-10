@@ -74,6 +74,10 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
