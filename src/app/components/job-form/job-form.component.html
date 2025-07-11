@@ -164,6 +164,30 @@
                   Please select a country
                 </div>
               </div>
+              <!-- City -->
+              <div class="col-md-6">
+                <label for="city" class="form-label fw-semibold">
+                  City <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  class="form-control"
+                  formControlName="city"
+                  placeholder="e.g. Kampala"
+                  [class.is-invalid]="
+                    jobForm.get('city')?.invalid && jobForm.get('city')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('city')?.invalid && jobForm.get('city')?.touched
+                  "
+                >
+                  City name must be between 2 and 100 characters
+                </div>
+              </div>
 
               <!-- Salary -->
               <div class="col-md-6">

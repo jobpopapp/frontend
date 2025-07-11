@@ -116,7 +116,8 @@ export class JobFormComponent implements OnInit {
       job_description: ['', [Validators.required, Validators.minLength(50)]],
       requirements: ['', [Validators.required, Validators.minLength(20)]],
       category_id: [null, Validators.required],
-      country: ['', Validators.required],
+          country: ['', Validators.required],
+          city: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       job_type: ['', Validators.required],
       salary: [''],
       deadline: ['', [Validators.required, this.futureDateValidator]],
@@ -134,6 +135,12 @@ export class JobFormComponent implements OnInit {
       visibility: ['public'],
       whatsapp: ['']
     });
+        // Watch for application method changes
+        this.setupApplicationMethodValidators();
+        // Set is_foreign based on country selection
+        this.jobForm.get('country')?.valueChanges.subscribe((country) => {
+          this.jobForm.get('is_foreign')?.setValue(country !== 'uganda');
+        });
 
     // Watch for application method changes
     this.setupApplicationMethodValidators();
@@ -293,18 +300,16 @@ export class JobFormComponent implements OnInit {
       city: formValue.city || '',
       salary: formValue.salary || '',
       deadline: formValue.deadline,
-      job_description: formValue.job_description,
+      job_description: formValue.job_description, // backend expects 'job_description'
       requirements: formValue.requirements,
       application_link: formValue.application_link || '',
       email: formValue.email || '',
-      company_website: formValue.company_website || '',
-      contact_phone: formValue.contact_phone || formValue.phone || '',
-      company_id: formValue.company_id || '',
-      is_foreign: formValue.is_foreign || false,
       phone: formValue.phone || '',
+      company_website: formValue.company_website || 'NULL',
       whatsapp: formValue.whatsapp || '',
-      category_id: formValue.category_id,
-      job_type: formValue.job_type || 'full-time'
+      category_id: Number(formValue.category_id),
+      job_type: formValue.job_type || 'full-time',
+      is_foreign: formValue.is_foreign || false
     };
     return data;
   }

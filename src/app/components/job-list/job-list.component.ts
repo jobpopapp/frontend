@@ -239,6 +239,19 @@ export class JobListComponent implements OnInit {
     this.router.navigate(['/jobs/new']);
   }
 
+  /**
+   * Utility to ensure job payload includes required fields for backend validation
+   * Replace phone with contact_phone and add company_website as optional (default 'NULL')
+   */
+  prepareJobPayload(job: any): any {
+    return {
+      ...job,
+      contact_phone: job.contact_phone || job.phone || '',
+      company_website: job.company_website || '',
+      phone: undefined // Remove old phone field if present
+    };
+  }
+
   // Mock data for demo purposes
   private getMockJobs(): Job[] {
     return [
