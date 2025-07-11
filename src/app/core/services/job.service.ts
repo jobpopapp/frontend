@@ -10,6 +10,11 @@ export class JobService {
 
   constructor(private apiService: ApiService) { }
 
+  // Get all jobs for the company
+  getCompanyJobs(): Observable<ApiResponse<Job[]>> {
+    return this.apiService.get<Job[]>('/jobs');
+  }
+
   // Get all jobs for the company with pagination
   getJobs(page: number = 1, limit: number = 10, filters?: any): Observable<PaginatedResponse<Job>> {
     return this.apiService.getPaginated<Job>('/jobs', page, limit, filters);
@@ -90,28 +95,42 @@ export class JobService {
       errors.push('Job title is required');
     }
 
-    if (!jobData.description?.trim()) {
+    if (!jobData.company?.trim()) {
+      errors.push('Company name is required');
+    }
+
+    if (!jobData.job_description?.trim() && !jobData.description?.trim()) {
       errors.push('Job description is required');
     }
 
-    if (!jobData.location?.trim()) {
-      errors.push('Location is required');
+    if (!jobData.country?.trim() && !jobData.location?.trim()) {
+      errors.push('Country/Location is required');
     }
 
     if (!jobData.category?.trim()) {
       errors.push('Category is required');
     }
 
-    if (!jobData.job_type) {
-      errors.push('Job type is required');
+    if (!jobData.deadline?.trim()) {
+      errors.push('Application deadline is required');
     }
 
     if (jobData.title && jobData.title.length > 100) {
       errors.push('Job title cannot exceed 100 characters');
     }
 
-    if (jobData.description && jobData.description.length < 50) {
+    const description = jobData.job_description || jobData.description;
+    if (description && description.length < 50) {
       errors.push('Job description should be at least 50 characters');
+    }
+
+    // Validate deadline is in the future
+    if (jobData.deadline) {
+      const deadlineDate = new Date(jobData.deadline);
+      const today = new Date();
+      if (deadlineDate <= today) {
+        errors.push('Application deadline must be in the future');
+      }
     }
 
     return {

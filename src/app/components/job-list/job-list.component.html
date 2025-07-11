@@ -1,0 +1,252 @@
+<div class="job-list-container">
+  <!-- Search and Filter Bar -->
+  <div class="search-filter-bar mb-4">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="search-box position-relative">
+          <i
+            class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+          ></i>
+          <input
+            type="text"
+            class="form-control ps-5"
+            placeholder="Search jobs..."
+            [(ngModel)]="searchTerm"
+            (input)="filterJobs()"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select
+          class="form-select"
+          [(ngModel)]="statusFilter"
+          (change)="filterJobs()"
+        >
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="expired">Expired</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select
+          class="form-select"
+          [(ngModel)]="typeFilter"
+          (change)="filterJobs()"
+        >
+          <option value="">All Types</option>
+          <option value="full_time">Full Time</option>
+          <option value="part_time">Part Time</option>
+          <option value="contract">Contract</option>
+          <option value="remote">Remote</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job Cards Grid -->
+  <div class="jobs-grid" *ngIf="filteredJobs.length > 0; else noJobsTemplate">
+    <div class="row g-4">
+      <div *ngFor="let job of filteredJobs" class="col-lg-6 col-xl-4">
+        <div class="job-card h-100" [class.featured]="job.featured">
+          <!-- Job Header -->
+          <div class="job-header">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="job-status">
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': job.status === 'active',
+                    'bg-warning': job.status === 'expired',
+                    'bg-secondary': job.status === 'draft'
+                  }"
+                >
+                  {{ job.status | titlecase }}
+                </span>
+                <span *ngIf="job.featured" class="badge bg-primary ms-2">
+                  <i class="bi bi-star-fill me-1"></i>Featured
+                </span>
+              </div>
+              <div class="job-actions dropdown">
+                <button
+                  class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" (click)="editJob(job.id)">
+                      <i class="bi bi-pencil me-2"></i>Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="viewApplications(job.id)">
+                      <i class="bi bi-people me-2"></i>Applications
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="duplicateJob(job.id)">
+                      <i class="bi bi-files me-2"></i>Duplicate
+                    </a>
+                  </li>
+                  <li><hr class="dropdown-divider" /></li>
+                  <li>
+                    <a
+                      class="dropdown-item text-danger"
+                      (click)="deleteJob(job.id)"
+                    >
+                      <i class="bi bi-trash me-2"></i>Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <h5 class="job-title mb-2">{{ job.title }}</h5>
+            <div class="job-meta text-muted small mb-3">
+              <span class="me-3">
+                <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
+              </span>
+              <span class="me-3">
+                <i class="bi bi-briefcase me-1"></i
+                >{{ job.job_type | titlecase }}
+              </span>
+              <span class="me-3">
+                <i class="bi bi-currency-dollar me-1"></i
+                >{{ job.salary_range || "Negotiable" }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Job Description Preview -->
+          <div class="job-description mb-3">
+            <p class="text-muted small mb-0">
+              {{ getJobDescriptionPreview(job.description) }}
+            </p>
+          </div>
+
+          <!-- Job Stats -->
+          <div class="job-stats mb-3">
+            <div class="row g-2">
+              <div class="col-4 text-center">
+                <div class="stat-item">
+                  <div class="stat-number fw-bold text-primary">
+                    {{ job.applications_count || 0 }}
+                  </div>
+                  <div class="stat-label small text-muted">Applications</div>
+                </div>
+              </div>
+              <div class="col-4 text-center">
+                <div class="stat-item">
+                  <div class="stat-number fw-bold text-info">
+                    {{ job.views_count || 0 }}
+                  </div>
+                  <div class="stat-label small text-muted">Views</div>
+                </div>
+              </div>
+              <div class="col-4 text-center">
+                <div class="stat-item">
+                  <div class="stat-number fw-bold text-success">
+                    {{ getDaysRemaining(job.expires_at) }}
+                  </div>
+                  <div class="stat-label small text-muted">Days Left</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Footer -->
+          <div class="job-footer mt-auto">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                Posted {{ getTimeAgo(job.created_at) }}
+              </small>
+              <div class="btn-group btn-group-sm">
+                <button
+                  class="btn btn-outline-primary"
+                  (click)="viewApplications(job.id)"
+                  [disabled]="(job.applications_count || 0) === 0"
+                >
+                  <i class="bi bi-people me-1"></i>
+                  Applications ({{ job.applications_count || 0 }})
+                </button>
+                <button class="btn btn-primary" (click)="editJob(job.id)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Jobs Template -->
+  <ng-template #noJobsTemplate>
+    <div class="no-jobs-state text-center py-5">
+      <div class="no-jobs-icon mb-4">
+        <i class="bi bi-briefcase display-1 text-muted"></i>
+      </div>
+      <h4 class="text-muted mb-3">
+        {{
+          searchTerm || statusFilter || typeFilter
+            ? "No jobs match your filters"
+            : "No jobs posted yet"
+        }}
+      </h4>
+      <p class="text-muted mb-4">
+        {{
+          searchTerm || statusFilter || typeFilter
+            ? "Try adjusting your search criteria or filters to find jobs."
+            : "Start by posting your first job to attract top talent and grow your team."
+        }}
+      </p>
+      <div class="no-jobs-actions">
+        <button
+          *ngIf="searchTerm || statusFilter || typeFilter"
+          class="btn btn-outline-secondary me-3"
+          (click)="clearFilters()"
+        >
+          <i class="bi bi-x-circle me-2"></i>Clear Filters
+        </button>
+        <button class="btn btn-primary" (click)="createNewJob()">
+          <i class="bi bi-plus-circle me-2"></i>Post Your First Job
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Pagination -->
+  <div class="pagination-container mt-4" *ngIf="filteredJobs.length > 0">
+    <nav aria-label="Job list pagination">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="goToPage(currentPage - 1)">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </li>
+        <li
+          *ngFor="let page of getVisiblePages()"
+          class="page-item"
+          [class.active]="page === currentPage"
+        >
+          <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="goToPage(currentPage + 1)">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="pagination-info text-center mt-3">
+      <small class="text-muted">
+        Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of
+        {{ totalJobs }} jobs
+      </small>
+    </div>
+  </div>
+</div>

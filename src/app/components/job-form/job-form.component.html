@@ -1,0 +1,625 @@
+<div class="job-form-container">
+  <!-- Form Header -->
+  <div class="form-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="fw-semibold mb-1">
+          {{ isEdit ? "Edit Job" : "Post New Job" }}
+        </h4>
+        <p class="text-muted mb-0">
+          {{
+            isEdit
+              ? "Update your job posting details"
+              : "Create a new job posting to attract top talent"
+          }}
+        </p>
+      </div>
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary me-2"
+          (click)="saveDraft()"
+          [disabled]="isLoading"
+        >
+          <i class="bi bi-save me-2"></i>Save Draft
+        </button>
+        <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+          <i class="bi bi-x me-2"></i>Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job Form -->
+  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-form">
+    <div class="row g-4">
+      <!-- Left Column - Basic Information -->
+      <div class="col-lg-8">
+        <!-- Basic Job Information Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-semibold">
+              <i class="bi bi-info-circle me-2 text-primary"></i>Basic
+              Information
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Job Title -->
+              <div class="col-12">
+                <label for="title" class="form-label fw-semibold">
+                  Job Title <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  class="form-control"
+                  formControlName="title"
+                  placeholder="e.g. Senior Software Engineer"
+                  [class.is-invalid]="
+                    jobForm.get('title')?.invalid &&
+                    jobForm.get('title')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('title')?.invalid &&
+                    jobForm.get('title')?.touched
+                  "
+                >
+                  Job title is required
+                </div>
+              </div>
+
+              <!-- Company Name -->
+              <div class="col-md-6">
+                <label for="company" class="form-label fw-semibold">
+                  Company Name <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="company"
+                  class="form-control"
+                  formControlName="company"
+                  placeholder="e.g. Tech Solutions Ltd"
+                  [class.is-invalid]="
+                    jobForm.get('company')?.invalid &&
+                    jobForm.get('company')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('company')?.invalid &&
+                    jobForm.get('company')?.touched
+                  "
+                >
+                  Company name is required
+                </div>
+              </div>
+
+              <!-- Job Category -->
+              <div class="col-md-6">
+                <label for="category_id" class="form-label fw-semibold">
+                  Category <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="category_id"
+                  class="form-select"
+                  formControlName="category_id"
+                  [class.is-invalid]="
+                    jobForm.get('category_id')?.invalid &&
+                    jobForm.get('category_id')?.touched
+                  "
+                >
+                  <option value="">Select Category</option>
+                  <option
+                    *ngFor="let category of jobCategories"
+                    [value]="category.id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('category_id')?.invalid &&
+                    jobForm.get('category_id')?.touched
+                  "
+                >
+                  Please select a job category
+                </div>
+              </div>
+
+              <!-- Country -->
+              <div class="col-md-6">
+                <label for="country" class="form-label fw-semibold">
+                  Country <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="country"
+                  class="form-select"
+                  formControlName="country"
+                  [class.is-invalid]="
+                    jobForm.get('country')?.invalid &&
+                    jobForm.get('country')?.touched
+                  "
+                >
+                  <option value="">Select Country</option>
+                  <option
+                    *ngFor="let country of countries"
+                    [value]="country.value"
+                  >
+                    {{ country.label }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('country')?.invalid &&
+                    jobForm.get('country')?.touched
+                  "
+                >
+                  Please select a country
+                </div>
+              </div>
+
+              <!-- Salary -->
+              <div class="col-md-6">
+                <label for="salary" class="form-label fw-semibold"
+                  >Salary</label
+                >
+                <input
+                  type="text"
+                  id="salary"
+                  class="form-control"
+                  formControlName="salary"
+                  placeholder="e.g. $50,000 - $80,000 or KSh 500,000"
+                />
+                <small class="form-text text-muted"
+                  >Optional - helps attract candidates</small
+                >
+              </div>
+
+              <!-- Application Deadline -->
+              <div class="col-md-6">
+                <label for="deadline" class="form-label fw-semibold">
+                  Application Deadline <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="deadline"
+                  class="form-control"
+                  formControlName="deadline"
+                  [class.is-invalid]="
+                    jobForm.get('deadline')?.invalid &&
+                    jobForm.get('deadline')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('deadline')?.invalid &&
+                    jobForm.get('deadline')?.touched
+                  "
+                >
+                  <span *ngIf="jobForm.get('deadline')?.hasError('required')">
+                    Application deadline is required
+                  </span>
+                  <span *ngIf="jobForm.get('deadline')?.hasError('futureDate')">
+                    Application deadline must be in the future
+                  </span>
+                </div>
+              </div>
+
+              <!-- Job Type -->
+              <div class="col-md-6">
+                <label for="job_type" class="form-label fw-semibold">
+                  Job Type <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="job_type"
+                  class="form-select"
+                  formControlName="job_type"
+                  [class.is-invalid]="
+                    jobForm.get('job_type')?.invalid &&
+                    jobForm.get('job_type')?.touched
+                  "
+                >
+                  <option value="">Select Job Type</option>
+                  <option value="full-time">Full Time</option>
+                  <option value="part-time">Part Time</option>
+                  <option value="contract">Contract</option>
+                  <option value="internship">Internship</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('job_type')?.invalid &&
+                    jobForm.get('job_type')?.touched
+                  "
+                >
+                  Please select a job type
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Description Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-semibold">
+              <i class="bi bi-file-text me-2 text-primary"></i>Job Description
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Description -->
+              <div class="col-12">
+                <label for="job_description" class="form-label fw-semibold">
+                  Job Description <span class="text-danger">*</span>
+                </label>
+                <textarea
+                  id="job_description"
+                  class="form-control"
+                  formControlName="job_description"
+                  rows="6"
+                  placeholder="Describe the role, responsibilities, and what makes this opportunity exciting..."
+                  [class.is-invalid]="
+                    jobForm.get('job_description')?.invalid &&
+                    jobForm.get('job_description')?.touched
+                  "
+                ></textarea>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('job_description')?.invalid &&
+                    jobForm.get('job_description')?.touched
+                  "
+                >
+                  Job description is required
+                </div>
+                <div class="form-text">
+                  <small class="text-muted">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    Tip: Include key responsibilities, team structure, and
+                    growth opportunities
+                  </small>
+                </div>
+              </div>
+
+              <!-- Requirements -->
+              <div class="col-12">
+                <label for="requirements" class="form-label fw-semibold">
+                  Requirements <span class="text-danger">*</span>
+                </label>
+                <textarea
+                  id="requirements"
+                  class="form-control"
+                  formControlName="requirements"
+                  rows="5"
+                  placeholder="List the required skills, experience, and qualifications..."
+                  [class.is-invalid]="
+                    jobForm.get('requirements')?.invalid &&
+                    jobForm.get('requirements')?.touched
+                  "
+                ></textarea>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('requirements')?.invalid &&
+                    jobForm.get('requirements')?.touched
+                  "
+                >
+                  Job requirements are required
+                </div>
+                <div class="form-text">
+                  <small class="text-muted">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    Tip: Separate must-have vs nice-to-have requirements
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Details Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-semibold">
+              <i class="bi bi-person-check me-2 text-primary"></i>Application
+              Details
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Email Field -->
+              <div class="col-md-6">
+                <label for="email" class="form-label fw-semibold">
+                  Application Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  formControlName="email"
+                  placeholder="jobs@company.com"
+                  [class.is-invalid]="
+                    jobForm.get('email')?.invalid &&
+                    jobForm.get('email')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('email')?.invalid &&
+                    jobForm.get('email')?.touched
+                  "
+                >
+                  Valid email is required
+                </div>
+              </div>
+
+              <!-- Phone Field -->
+              <div class="col-md-6">
+                <label for="phone" class="form-label fw-semibold">
+                  Application Phone
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  class="form-control"
+                  formControlName="phone"
+                  placeholder="+254 700 000 000"
+                  [class.is-invalid]="
+                    jobForm.get('phone')?.invalid &&
+                    jobForm.get('phone')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('phone')?.invalid &&
+                    jobForm.get('phone')?.touched
+                  "
+                >
+                  Phone number is required
+                </div>
+              </div>
+
+              <!-- WhatsApp (optional for phone) -->
+              <div class="col-md-6">
+                <label for="whatsapp" class="form-label fw-semibold"
+                  >WhatsApp (Optional)</label
+                >
+                <input
+                  type="tel"
+                  id="whatsapp"
+                  class="form-control"
+                  formControlName="whatsapp"
+                  placeholder="+254 700 000 000"
+                />
+                <small class="form-text text-muted"
+                  >For WhatsApp applications</small
+                >
+              </div>
+
+              <!-- External Link Field -->
+              <div class="col-md-8">
+                <label for="application_link" class="form-label fw-semibold">
+                  Application Link
+                </label>
+                <input
+                  type="url"
+                  id="application_link"
+                  class="form-control"
+                  formControlName="application_link"
+                  placeholder="https://company.com/careers/apply"
+                  [class.is-invalid]="
+                    jobForm.get('application_link')?.invalid &&
+                    jobForm.get('application_link')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    jobForm.get('application_link')?.invalid &&
+                    jobForm.get('application_link')?.touched
+                  "
+                >
+                  Valid URL is required
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Additional Settings -->
+      <div class="col-lg-4">
+        <!-- Job Settings Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-semibold">
+              <i class="bi bi-gear me-2 text-primary"></i>Job Settings
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Foreign Job Toggle -->
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="is_foreign"
+                    formControlName="is_foreign"
+                  />
+                  <label class="form-check-label fw-semibold" for="is_foreign">
+                    Foreign Job Opportunity
+                  </label>
+                </div>
+                <small class="form-text text-muted">
+                  Check if this job is for positions outside Kenya
+                </small>
+              </div>
+
+              <!-- Job Duration -->
+              <div class="col-12">
+                <label for="job_duration" class="form-label fw-semibold"
+                  >Job Duration</label
+                >
+                <select
+                  id="job_duration"
+                  class="form-select"
+                  formControlName="job_duration"
+                >
+                  <option value="">Select Duration</option>
+                  <option value="permanent">Permanent</option>
+                  <option value="temporary">Temporary</option>
+                  <option value="3-months">3 Months</option>
+                  <option value="6-months">6 Months</option>
+                  <option value="1-year">1 Year</option>
+                  <option value="project-based">Project Based</option>
+                </select>
+              </div>
+
+              <!-- Experience Level -->
+              <div class="col-12">
+                <label for="experience_level" class="form-label fw-semibold"
+                  >Experience Level</label
+                >
+                <select
+                  id="experience_level"
+                  class="form-select"
+                  formControlName="experience_level"
+                >
+                  <option value="">Select Level</option>
+                  <option value="entry">Entry Level (0-2 years)</option>
+                  <option value="mid">Mid Level (2-5 years)</option>
+                  <option value="senior">Senior Level (5+ years)</option>
+                  <option value="executive">Executive Level</option>
+                </select>
+              </div>
+
+              <!-- Job Visibility -->
+              <div class="col-12">
+                <label for="visibility" class="form-label fw-semibold"
+                  >Job Visibility</label
+                >
+                <select
+                  id="visibility"
+                  class="form-select"
+                  formControlName="visibility"
+                >
+                  <option value="public">
+                    Public - Visible to all job seekers
+                  </option>
+                  <option value="private">
+                    Private - Only via direct link
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-semibold">
+              <i class="bi bi-eye me-2 text-primary"></i>Preview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="job-preview">
+              <h6 class="fw-semibold mb-2">
+                {{ jobForm.get("title")?.value || "Job Title" }}
+              </h6>
+              <p class="text-muted small mb-2">
+                <i class="bi bi-building me-1"></i
+                >{{ jobForm.get("company")?.value || "Company Name" }}
+              </p>
+              <p class="text-muted small mb-2">
+                <i class="bi bi-geo-alt me-1"></i
+                >{{
+                  getCountryLabel(jobForm.get("country")?.value) || "Country"
+                }}
+                <span class="mx-2">•</span>
+                <i class="bi bi-tag me-1"></i
+                >{{
+                  getCategoryLabel(jobForm.get("category")?.value) || "Category"
+                }}
+              </p>
+              <p
+                class="text-muted small mb-2"
+                *ngIf="jobForm.get('salary')?.value"
+              >
+                <i class="bi bi-currency-dollar me-1"></i
+                >{{ jobForm.get("salary")?.value }}
+              </p>
+              <p
+                class="text-muted small mb-2"
+                *ngIf="jobForm.get('deadline')?.value"
+              >
+                <i class="bi bi-calendar me-1"></i>
+                Deadline: {{ formatDate(jobForm.get("deadline")?.value) }}
+              </p>
+              <p class="preview-description text-muted small">
+                {{ getDescriptionPreview() }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-grid gap-2">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            [disabled]="jobForm.invalid || isLoading"
+          >
+            <span
+              *ngIf="isLoading"
+              class="spinner-border spinner-border-sm me-2"
+            ></span>
+            <i *ngIf="!isLoading" class="bi bi-check-circle me-2"></i>
+            {{ isEdit ? "Update Job" : "Publish Job" }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="previewJob()"
+            [disabled]="jobForm.invalid"
+          >
+            <i class="bi bi-eye me-2"></i>Preview Job
+          </button>
+        </div>
+
+        <!-- Form Status -->
+        <div class="mt-3">
+          <div class="progress" style="height: 4px">
+            <div
+              class="progress-bar"
+              [style.width.%]="getFormCompletionPercentage()"
+              [ngClass]="{
+                'bg-danger': getFormCompletionPercentage() < 40,
+                'bg-warning':
+                  getFormCompletionPercentage() >= 40 &&
+                  getFormCompletionPercentage() < 80,
+                'bg-success': getFormCompletionPercentage() >= 80
+              }"
+            ></div>
+          </div>
+          <small class="text-muted">
+            Form completion: {{ getFormCompletionPercentage() }}%
+          </small>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

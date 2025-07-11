@@ -1,0 +1,332 @@
+.job-form-container {
+  max-width: 100%;
+  
+  .form-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    
+    h4 {
+      color: #1a202c;
+      font-weight: 600;
+    }
+    
+    .form-actions {
+      .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+      }
+    }
+  }
+
+  .job-form {
+    .card {
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+      }
+      
+      .card-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.5rem;
+        
+        .card-title {
+          color: #1a202c;
+          font-size: 1rem;
+          
+          i {
+            font-size: 1.1rem;
+          }
+        }
+      }
+      
+      .card-body {
+        padding: 1.5rem;
+      }
+    }
+
+    .form-label {
+      color: #374151;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      
+      .text-danger {
+        color: #dc2626 !important;
+      }
+    }
+
+    .form-control,
+    .form-select {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      
+      &:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      
+      &.is-invalid {
+        border-color: #dc2626;
+        
+        &:focus {
+          border-color: #dc2626;
+          box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+      }
+      
+      &::placeholder {
+        color: #9ca3af;
+      }
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-text {
+      font-size: 0.8125rem;
+      margin-top: 0.5rem;
+      
+      .bi-lightbulb {
+        color: #f59e0b;
+      }
+    }
+
+    .invalid-feedback {
+      font-size: 0.8125rem;
+      margin-top: 0.25rem;
+    }
+
+    .application-options {
+      .form-check {
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: #f9fafb;
+          border-color: #d1d5db;
+        }
+        
+        .form-check-input:checked + .form-check-label {
+          color: #3b82f6;
+          font-weight: 500;
+        }
+        
+        .form-check-label {
+          cursor: pointer;
+          font-size: 0.875rem;
+          
+          i {
+            color: #6b7280;
+          }
+        }
+      }
+    }
+
+    .form-check-input {
+      &:checked {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+    }
+
+    .form-switch .form-check-input {
+      &:checked {
+        background-color: #10b981;
+        border-color: #10b981;
+      }
+    }
+  }
+
+  .job-preview {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    
+    h6 {
+      color: #1a202c;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .preview-description {
+      line-height: 1.5;
+      font-size: 0.8125rem;
+    }
+    
+    i {
+      color: #6b7280;
+      font-size: 0.8125rem;
+    }
+  }
+
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &.btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border: none;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+    
+    &.btn-outline-primary {
+      color: #3b82f6;
+      border-color: #3b82f6;
+      
+      &:hover {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+        transform: translateY(-1px);
+      }
+    }
+    
+    &.btn-outline-secondary {
+      color: #6b7280;
+      border-color: #d1d5db;
+      
+      &:hover {
+        background-color: #f9fafb;
+        border-color: #9ca3af;
+      }
+    }
+    
+    &.btn-outline-danger {
+      color: #dc2626;
+      border-color: #dc2626;
+      
+      &:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+      }
+    }
+    
+    &.btn-lg {
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  .progress {
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    
+    .progress-bar {
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+  }
+
+  .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+// Responsive Design
+@media (max-width: 992px) {
+  .job-form-container {
+    .form-header {
+      .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+        
+        .form-actions {
+          align-self: stretch;
+          
+          .btn {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .job-form-container {
+    .form-header {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .job-form {
+      .card {
+        .card-body {
+          padding: 1rem;
+        }
+      }
+    }
+    
+    .d-grid {
+      gap: 0.75rem !important;
+    }
+  }
+}
+
+// Animation for form validation
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  animation: shake 0.3s ease-in-out;
+}
+
+// Loading state
+.job-form-container.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+// Focus improvements
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+}
+
+// Custom checkbox and radio styles
+.form-check-input {
+  border-radius: 4px;
+  
+  &[type="checkbox"] {
+    border-radius: 4px;
+  }
+  
+  &[type="radio"] {
+    border-radius: 50%;
+  }
+}

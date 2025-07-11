@@ -32,32 +32,49 @@ export interface AuthResponse {
 // Job interfaces
 export interface Job {
   id: string;
+  company_id?: string;
+  company?: string;
   title: string;
   description: string;
+  job_description?: string;
   requirements: string;
   location: string;
+  country?: string;
   salary_range: string;
+  salary?: string;
+  deadline?: string;
   job_type: 'full-time' | 'part-time' | 'contract' | 'internship';
   category: string;
-  company_id: string;
   is_foreign: boolean;
   email?: string;
   phone?: string;
   whatsapp?: string;
   application_link?: string;
+  status?: 'active' | 'expired' | 'draft';
+  featured?: boolean;
+  applications_count?: number;
+  views_count?: number;
+  expires_at?: string;
   created_at: string;
   updated_at: string;
 }
 
 export interface JobCreateRequest {
+  company_id?: string;
+  company?: string;
   title: string;
   description: string;
+  job_description?: string;
   requirements: string;
   location: string;
+  country?: string;
   salary_range: string;
+  salary?: string;
+  deadline?: string;
   job_type: 'full-time' | 'part-time' | 'contract' | 'internship';
   category: string;
   is_foreign: boolean;
+  status?: 'active' | 'draft' | 'expired';
   email?: string;
   phone?: string;
   whatsapp?: string;

@@ -7,11 +7,13 @@ import { SubscriptionService } from '../../core/services/subscription.service';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { AccountVerificationComponent } from '../../components/account-verification/account-verification.component';
+import { JobListComponent } from '../../components/job-list/job-list.component';
+import { JobFormComponent } from '../../components/job-form/job-form.component';
 import { Company, Job, DashboardStats } from '../../core/interfaces';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, TitleCasePipe, NavbarComponent, SidebarComponent, AccountVerificationComponent],
+  imports: [CommonModule, RouterModule, TitleCasePipe, NavbarComponent, SidebarComponent, AccountVerificationComponent, JobListComponent, JobFormComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -46,8 +48,7 @@ export class DashboardComponent implements OnInit {
         'Post 1 job',
         'Job visible for 30 days',
         'Basic support',
-        'Standard job categories',
-        'Email notifications'
+        'Standard job categories'
       ]
     },
     {
@@ -224,6 +225,28 @@ export class DashboardComponent implements OnInit {
 
   refreshDashboard(): void {
     this.loadDashboardData();
+  }
+
+  // Job action handler
+  onJobAction(event: {action: string, jobId: string}): void {
+    console.log('Job action:', event);
+    // Handle different job actions
+    switch (event.action) {
+      case 'edit':
+        this.navigateToView('job-form');
+        break;
+      case 'applications':
+        // Navigate to applications view
+        console.log('View applications for job:', event.jobId);
+        break;
+      case 'duplicate':
+        // Job duplication is handled in the job list component
+        break;
+      case 'delete':
+        // Job deletion is handled in the job list component
+        this.loadDashboardData(); // Refresh dashboard after deletion
+        break;
+    }
   }
 
   // Subscription Plans Methods
