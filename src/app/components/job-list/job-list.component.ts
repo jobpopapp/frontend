@@ -3,7 +3,7 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JobService } from '../../core/services/job.service';
-import { Job } from '../../core/interfaces';
+import { Job, JobCategory } from '../../core/interfaces';
 
 @Component({
   selector: 'app-job-list',
@@ -13,6 +13,12 @@ import { Job } from '../../core/interfaces';
   styleUrl: './job-list.component.scss'
 })
 export class JobListComponent implements OnInit {
+  @Input() jobCategories: JobCategory[] = [];
+
+  getCategoryLabel(category: string | number): string {
+    const found = this.jobCategories.find(cat => String(cat.id) === String(category) || cat.name === category);
+    return found ? found.name : (typeof category === 'string' ? category : '');
+  }
   @Input() jobs: Job[] = [];
   @Output() jobAction = new EventEmitter<{action: string, jobId: string}>();
   @Output() createJob = new EventEmitter<void>();
@@ -47,7 +53,12 @@ export class JobListComponent implements OnInit {
     this.isLoading = true;
     this.jobService.getCompanyJobs().subscribe({
       next: (response: any) => {
-        this.allJobs = response.data || response || [];
+        this.allJobs = (response.data || response || []).map((job: any) => ({
+          ...job,
+          category: job.category && typeof job.category === 'object'
+            ? job.category.id
+            : job.category
+        }));
         this.jobs = this.allJobs;
         this.filterJobs();
         this.isLoading = false;
@@ -56,7 +67,12 @@ export class JobListComponent implements OnInit {
         console.error('Failed to load jobs:', error);
         this.isLoading = false;
         // Set some mock data for demo purposes
-        this.allJobs = this.getMockJobs();
+        this.allJobs = this.getMockJobs().map((job: any) => ({
+          ...job,
+          category: job.category && typeof job.category === 'object'
+            ? (job.category.id || job.category.name)
+            : job.category
+        }));
         this.jobs = this.allJobs;
         this.filterJobs();
       }

@@ -70,12 +70,12 @@ export class JobFormComponent implements OnInit {
       next: (response) => {
         // If response.data.categories is an array of strings, map to objects
         const data: any = response.data;
-        if (data && data.categories && Array.isArray(data.categories)) {
-          this.jobCategories = data.categories.map((name: string, idx: number) => ({ id: idx + 1, name }));
-        } else if (Array.isArray(data)) {
+        if (data && Array.isArray(data)) {
           this.jobCategories = data;
+          console.log('jobCategories:', this.jobCategories);
         } else {
           this.jobCategories = [];
+          console.log('jobCategories (empty):', this.jobCategories);
         }
       },
       error: (error) => {
@@ -285,36 +285,28 @@ export class JobFormComponent implements OnInit {
 
   private prepareFormData(): JobCreateRequest {
     const formValue = this.jobForm.value;
-    // Prepare data according to database schema
+    // Build payload to match backend spec
     const data: any = {
       title: formValue.title,
       company: formValue.company,
-      job_description: formValue.job_description,
-      category_id: formValue.category_id,
       country: formValue.country,
-      salary: formValue.salary || null,
+      city: formValue.city || '',
+      salary: formValue.salary || '',
       deadline: formValue.deadline,
-      is_foreign: formValue.is_foreign || false,
-      // Additional fields for legacy compatibility
-      description: formValue.job_description,
+      job_description: formValue.job_description,
       requirements: formValue.requirements,
-      location: formValue.country,
-      salary_range: formValue.salary,
+      application_link: formValue.application_link || '',
+      email: formValue.email || '',
+      company_website: formValue.company_website || '',
+      contact_phone: formValue.contact_phone || formValue.phone || '',
+      company_id: formValue.company_id || '',
+      is_foreign: formValue.is_foreign || false,
+      phone: formValue.phone || '',
+      whatsapp: formValue.whatsapp || '',
+      category_id: formValue.category_id,
       job_type: formValue.job_type || 'full-time'
     };
-
-    // Add all contact methods if filled
-    if (formValue.email) {
-      data.email = formValue.email;
-    }
-    if (formValue.phone) {
-      data.phone = formValue.phone;
-    }
-    if (formValue.application_link) {
-      data.application_link = formValue.application_link;
-    }
-
-    return data as JobCreateRequest;
+    return data;
   }
 
   cancel(): void {
@@ -386,7 +378,7 @@ export class JobFormComponent implements OnInit {
   }
 
   getFormCompletionPercentage(): number {
-    const requiredFields = ['title', 'company', 'job_description', 'requirements', 'category', 'country', 'job_type', 'deadline'];
+    const requiredFields = ['title', 'company', 'job_description', 'requirements', 'category_id', 'country', 'job_type', 'deadline'];
     // All contact methods are optional, but count as completed if filled and valid
     const contactFields = ['email', 'phone', 'application_link'];
     const completedFields = requiredFields.filter(field => {

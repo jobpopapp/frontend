@@ -267,6 +267,7 @@
               <div class="card-body">
                 <app-job-list
                   [jobs]="recentJobs"
+                  [jobCategories]="jobCategories"
                   (jobAction)="onJobAction($event)"
                   (createJob)="navigateToView('job-form')"
                 ></app-job-list>

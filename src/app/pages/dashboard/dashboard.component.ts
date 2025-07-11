@@ -9,7 +9,7 @@ import { SidebarComponent } from '../../components/layout/sidebar/sidebar.compon
 import { AccountVerificationComponent } from '../../components/account-verification/account-verification.component';
 import { JobListComponent } from '../../components/job-list/job-list.component';
 import { JobFormComponent } from '../../components/job-form/job-form.component';
-import { Company, Job, DashboardStats } from '../../core/interfaces';
+import { Company, Job, DashboardStats, JobCategory } from '../../core/interfaces';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +20,7 @@ import { Company, Job, DashboardStats } from '../../core/interfaces';
 export class DashboardComponent implements OnInit {
   currentCompany: Company | null = null;
   recentJobs: Job[] = [];
+  jobCategories: JobCategory[] = [];
   dashboardStats: DashboardStats = {
     totalJobs: 0,
     activeJobs: 0,
@@ -109,6 +110,20 @@ export class DashboardComponent implements OnInit {
       this.isVerified = company?.is_verified || false;
     });
 
+    // Load job categories
+    this.jobService.getCategories().subscribe({
+      next: (response) => {
+        if (response.success && Array.isArray(response.data)) {
+          this.jobCategories = response.data;
+        } else {
+          this.jobCategories = [];
+        }
+      },
+      error: (error) => {
+        console.error('Error loading job categories:', error);
+        this.jobCategories = [];
+      }
+    });
     // Load recent jobs
     this.jobService.getJobs(1, 5).subscribe({
       next: (response) => {
@@ -177,7 +192,8 @@ export class DashboardComponent implements OnInit {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
+    if (isNaN(diffInHours)) return '';
     if (diffInHours < 1) {
       return 'Just now';
     } else if (diffInHours < 24) {
