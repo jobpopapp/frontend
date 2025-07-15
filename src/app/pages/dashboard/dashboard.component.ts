@@ -276,23 +276,35 @@ export class DashboardComponent implements OnInit {
     const paymentData = {
       planType: plan.id as 'monthly' | 'annual' | 'per_job',
       amount: plan.price,
-      currency: 'USD'
+      currency: 'UGX'
     };
 
-    // Call subscription service to initiate Pesapal payment
+    // Call subscription service to initiate subscription
     this.subscriptionService.initiatePayment(paymentData)
       .subscribe({
         next: (response: any) => {
-          // Redirect to Pesapal payment page
-          if (response.data?.payment_url) {
-            window.location.href = response.data.payment_url;
+          if (response.success && response.data?.subscription) {
+            // Subscription activated successfully
+            this.subscriptionStatus = 'active';
+            this.selectedPlan = null;
+            this.isLoading = false;
+            // Optionally update dashboardStats or show a success message
+            this.dashboardStats.subscriptionStatus = 'active';
+            // You can also store subscription details if needed:
+            // this.currentSubscription = response.data.subscription;
+          } else {
+            // Show error message from backend
+            console.error('Subscription activation failed:', response.message);
+            this.isLoading = false;
+            this.selectedPlan = null;
+            // Optionally show error to user
           }
         },
         error: (error: any) => {
-          console.error('Payment initiation failed:', error);
+          console.error('Subscription activation failed:', error);
           this.isLoading = false;
           this.selectedPlan = null;
-          // Show error message to user
+          // Optionally show error to user
         }
       });
   }

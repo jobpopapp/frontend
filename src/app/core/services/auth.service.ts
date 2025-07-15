@@ -70,12 +70,12 @@ export class AuthService {
 
   // Get current company profile
   getProfile(): Observable<{ success: boolean; data?: Company; message: string }> {
-    return this.apiService.get<Company>('/companies/profile');
+    return this.apiService.get<Company>('/auth/profile');
   }
 
   // Update company profile
   updateProfile(profileData: Partial<Company>): Observable<{ success: boolean; data?: Company; message: string }> {
-    return this.apiService.put<Company>('/companies/profile', profileData).pipe(
+    return this.apiService.put<Company>('/auth/profile', profileData).pipe(
       tap(response => {
         if (response.success && response.data) {
           this.currentCompanySubject.next(response.data);
