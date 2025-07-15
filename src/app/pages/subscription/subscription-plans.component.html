@@ -1,0 +1,32 @@
+<div class="subscription-plans-container card p-4 shadow-sm">
+  <h3>Choose a Subscription Plan</h3>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div class="row">
+    <div class="col-md-4" *ngFor="let plan of plans">
+      <div class="plan-card card mb-4">
+        <div class="card-body">
+          <h4>{{ plan.name }}</h4>
+          <p>{{ plan.description }}</p>
+          <ul>
+            <li *ngFor="let feature of plan.features">{{ feature }}</li>
+          </ul>
+          <div class="price mb-2">UGX {{ plan.price }}</div>
+          <button
+            class="btn btn-primary w-100"
+            (click)="subscribe(asPlanType(plan.id))"
+            [disabled]="loading || billingMissing"
+          >
+            Subscribe
+          </button>
+          <div *ngIf="billingMissing" class="alert alert-warning mt-2">
+            Please save your billing address before subscribing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loading" class="mt-3">
+    <span class="spinner-border spinner-border-sm"></span> Redirecting to
+    payment...
+  </div>
+</div>

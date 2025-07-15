@@ -1,0 +1,58 @@
+<div class="profile-container">
+  <h2>Billing Address</h2>
+  <div class="billing-address-card card shadow-sm p-4">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <strong>Name:</strong>
+        <span
+          >{{ billingAddress.first_name }} {{ billingAddress.middle_name }}
+          {{ billingAddress.last_name }}</span
+        >
+      </div>
+      <div class="col-md-6">
+        <strong>Email:</strong>
+        <span>{{ billingAddress.email_address }}</span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <strong>Phone:</strong>
+        <span>{{ billingAddress.phone_number }}</span>
+      </div>
+      <div class="col-md-6">
+        <strong>Country:</strong>
+        <span>{{ billingAddress.country_code }}</span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <strong>Address Line 1:</strong>
+        <span>{{ billingAddress.line_1 }}</span>
+      </div>
+      <div class="col-md-6">
+        <strong>Address Line 2:</strong>
+        <span>{{ billingAddress.line_2 }}</span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-4">
+        <strong>City:</strong>
+        <span>{{ billingAddress.city }}</span>
+      </div>
+      <div class="col-md-4">
+        <strong>State:</strong>
+        <span>{{ billingAddress.state }}</span>
+      </div>
+      <div class="col-md-4">
+        <strong>Postal Code:</strong>
+        <span>{{ billingAddress.postal_code }}</span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <strong>Zip Code:</strong>
+        <span>{{ billingAddress.zip_code }}</span>
+      </div>
+    </div>
+  </div>
+</div>

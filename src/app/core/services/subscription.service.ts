@@ -74,7 +74,7 @@ export class SubscriptionService {
     payment_url: string;
     order_tracking_id: string;
   }>> {
-    return this.apiService.post('/subscription/payment/initiate', paymentData);
+    return this.apiService.post('/subscription/simulate-payment', paymentData);
   }
 
   // Verify payment status

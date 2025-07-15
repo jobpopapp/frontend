@@ -113,7 +113,7 @@ export interface SubscriptionPlan {
 }
 
 export interface PaymentRequest {
-  plan_type: 'monthly' | 'annual' | 'per_job';
+  planType: 'monthly' | 'annual' | 'per_job';
   amount: number;
   currency: string;
 }

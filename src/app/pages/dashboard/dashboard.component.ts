@@ -274,7 +274,7 @@ export class DashboardComponent implements OnInit {
 
     // Prepare payment data for Pesapal
     const paymentData = {
-      plan_type: plan.id as 'monthly' | 'annual' | 'per_job',
+      planType: plan.id as 'monthly' | 'annual' | 'per_job',
       amount: plan.price,
       currency: 'USD'
     };

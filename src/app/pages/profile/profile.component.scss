@@ -1,0 +1,16 @@
+.profile-container {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.billing-address-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.billing-address-card strong {
+  min-width: 120px;
+  display: inline-block;
+}
+.billing-address-card span {
+  margin-left: 0.5rem;
+}
