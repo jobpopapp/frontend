@@ -1,4 +1,3 @@
-
 <div class="dashboard-layout d-flex">
   <!-- Sidebar -->
   <app-sidebar class="sidebar"></app-sidebar>
@@ -15,16 +14,27 @@
 
       <!-- Debug info -->
       <div
-        style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;"
+        style="
+          background: #f0f0f0;
+          padding: 10px;
+          margin: 10px 0;
+          border-radius: 5px;
+        "
       >
-        <small>Debug: Plans array length: {{ plans.length }} | Component loaded: {{ 'YES' }}</small>
+        <small
+          >Debug: Plans array length: {{ plans.length }} | Component loaded:
+          {{ "YES" }}</small
+        >
         <br /><small>Plans: {{ plans | json }}</small>
       </div>
 
       <!-- Show message if no plans -->
       <div *ngIf="plans.length === 0" class="alert alert-info">
         <strong>No subscription plans available.</strong>
-        <p>If you're seeing this, check the browser console for API response details.</p>
+        <p>
+          If you're seeing this, check the browser console for API response
+          details.
+        </p>
       </div>
 
       <!-- "Processing Subscription..." Modal -->
@@ -44,7 +54,9 @@
               <ul>
                 <li *ngFor="let feature of plan.features">{{ feature }}</li>
               </ul>
-              <div class="price mb-2">{{ plan.currency || 'UGX' }} {{ plan.price }}</div>
+              <div class="price mb-2">
+                {{ plan.currency || "UGX" }} {{ plan.price }}
+              </div>
               <button
                 class="btn btn-primary w-100"
                 (click)="subscribe(asPlanType(plan.id))"
@@ -56,7 +68,7 @@
                   role="status"
                   aria-hidden="true"
                 ></span>
-                {{ loading[plan.id] ? 'Loading...' : 'Subscribe' }}
+                {{ loading[plan.id] ? "Loading..." : "Subscribe" }}
               </button>
               <div *ngIf="billingMissing" class="alert alert-warning mt-2">
                 Please save your billing address before subscribing.

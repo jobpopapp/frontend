@@ -1,16 +1,19 @@
 
 import { Component, OnInit } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { SubscriptionService } from '../../core/services/subscription.service';
 import { BillingService, BillingAddress } from '../../services/billing.service';
 import { Router } from '@angular/router';
+import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
+import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 
 @Component({
   selector: 'app-subscription-plans',
   templateUrl: './subscription-plans.component.html',
   styleUrls: ['./subscription-plans.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, SidebarComponent, NavbarComponent]
 })
 export class SubscriptionPlansComponent implements OnInit {
   asPlanType(id: string): 'monthly' | 'annual' | 'per_job' {
