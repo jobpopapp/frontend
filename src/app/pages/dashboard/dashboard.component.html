@@ -312,149 +312,61 @@
 
       <!-- Subscription View -->
       <div *ngIf="currentView === 'subscription'">
-        <div class="row">
-          <div class="col-12">
-            <div class="card border-0 shadow-sm">
-              <div class="card-header bg-transparent border-0">
-                <h5 class="card-title mb-0 fw-semibold">Subscription Plans</h5>
-              </div>
-              <div class="card-body">
-                <!-- Subscription Plans Content -->
-                <div class="subscription-plans-content">
-                  <!-- Plans Grid -->
-                  <div class="plans-grid row g-4">
-                    <div
-                      *ngFor="let plan of subscriptionPlans"
-                      class="col-lg-4 col-md-6"
-                    >
-                      <div
-                        class="plan-card h-100"
-                        [class.popular]="plan.is_popular"
-                        [class.selected]="selectedPlan === plan.id"
-                      >
-                        <!-- Popular Badge -->
-                        <div *ngIf="plan.popular" class="popular-badge">
-                          <i class="bi bi-star-fill"></i>
-                          <span>Most Popular</span>
-                        </div>
+        <div class="container-fluid p-4">
+          <h3>Choose a Subscription Plan</h3>
+          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-                        <!-- Plan Header -->
-                        <div class="plan-header text-center">
-                          <h4 class="plan-name">{{ plan.name }}</h4>
-                          <p class="plan-description text-muted">
-                            {{ plan.description }}
-                          </p>
-                        </div>
+          <!-- Show message if no plans -->
+          <div *ngIf="subscriptionPlans.length === 0" class="alert alert-info">
+            <strong>No subscription plans available.</strong>
+            <p>
+              If you're seeing this, check the browser console for API response
+              details.
+            </p>
+          </div>
 
-                        <!-- Pricing -->
-                        <div class="plan-pricing text-center mb-4">
-                          <div class="price-display">
-                            <span class="price display-4 fw-bold">{{ plan.currency }} {{ plan.price }}</span>
-                            <span class="duration text-muted d-block">{{
-                              plan.id === 'per_job' ? 'per job posting' : (plan.duration_days === 30 ? 'per month' : 'per year')
-                            }}</span>
-                          </div>
+          <!-- "Processing Subscription..." Modal -->
+          <div *ngIf="isProcessing" class="processing-modal">
+            <div class="modal-content">
+              <span class="spinner-border spinner-border-sm"></span>
+              <span>Processing Subscription...</span>
+            </div>
+          </div>
 
-                          <!-- Special savings notice for annual -->
-                          <div
-                            *ngIf="plan.id === 'annual' && plan.features.includes('Save vs monthly')"
-                            class="savings-notice mt-3"
-                          >
-                            <i class="bi bi-piggy-bank-fill"></i>
-                            <span>Save vs monthly billing</span>
-                          </div>
-                        </div>
-
-                        <!-- Features List -->
-                        <div class="plan-features mb-4">
-                          <h6 class="features-title fw-semibold mb-3">
-                            What's included:
-                          </h6>
-                          <ul class="features-list list-unstyled">
-                            <li
-                              *ngFor="let feature of plan.features"
-                              class="feature-item mb-2"
-                            >
-                              <i
-                                class="bi bi-check-circle-fill text-success me-2"
-                              ></i>
-                              <span>{{ feature }}</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <!-- CTA Button -->
-                        <div class="plan-cta mt-auto">
-                          <button
-                            class="btn btn-primary w-100"
-                            [class.loading]="
-                              selectedPlan === plan.id && isLoading
-                            "
-                            [disabled]="isLoading"
-                            (click)="subscribeToPlan(plan)"
-                          >
-                            <span
-                              *ngIf="selectedPlan === plan.id && isLoading"
-                              class="spinner-border spinner-border-sm me-2"
-                            ></span>
-                            <span
-                              *ngIf="!(selectedPlan === plan.id && isLoading)"
-                            >
-                              {{
-                                plan.id === "per_job"
-                                  ? "Buy Now"
-                                  : "Subscribe Now"
-                              }}
-                            </span>
-                            <span *ngIf="selectedPlan === plan.id && isLoading"
-                              >Processing...</span
-                            >
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+          <div class="row">
+            <div class="col-md-4" *ngFor="let plan of subscriptionPlans">
+              <div
+                class="plan-card card mb-4"
+                [class.popular]="plan.is_popular"
+              >
+                <div class="card-body">
+                  <h4>{{ plan.name }}</h4>
+                  <p>{{ plan.description }}</p>
+                  <ul>
+                    <li *ngFor="let feature of plan.features">{{ feature }}</li>
+                  </ul>
+                  <div class="price mb-2">
+                    {{ plan.currency || "UGX" }} {{ plan.price }}
                   </div>
-
-                  <!-- Additional Info -->
-                  <div class="subscription-info mt-5">
-                    <div class="row g-4">
-                      <div class="col-md-4 text-center">
-                        <div class="info-icon mb-3">
-                          <i
-                            class="bi bi-shield-check-fill text-primary fs-2"
-                          ></i>
-                        </div>
-                        <h6>Secure Payments</h6>
-                        <p class="text-muted small">
-                          All payments are processed securely through Pesapal
-                        </p>
-                      </div>
-
-                      <div class="col-md-4 text-center">
-                        <div class="info-icon mb-3">
-                          <i
-                            class="bi bi-arrow-clockwise text-primary fs-2"
-                          ></i>
-                        </div>
-                        <h6>Cancel Anytime</h6>
-                        <p class="text-muted small">
-                          No long-term commitments. Cancel your subscription
-                          anytime
-                        </p>
-                      </div>
-
-                      <div class="col-md-4 text-center">
-                        <div class="info-icon mb-3">
-                          <i class="bi bi-headset text-primary fs-2"></i>
-                        </div>
-                        <h6>24/7 Support</h6>
-                        <p class="text-muted small">
-                          Our team is here to help you succeed with your hiring
-                          goals
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <button
+                    class="btn btn-primary w-100"
+                    (click)="subscribeToPlan(plan)"
+                    [disabled]="isLoading"
+                  >
+                    <span
+                      *ngIf="selectedPlan === plan.id && isLoading"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    {{
+                      selectedPlan === plan.id && isLoading
+                        ? "Loading..."
+                        : plan.id === "per_job"
+                        ? "Buy Now"
+                        : "Subscribe Now"
+                    }}
+                  </button>
                 </div>
               </div>
             </div>

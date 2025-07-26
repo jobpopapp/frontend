@@ -46,6 +46,8 @@ export class DashboardComponent implements OnInit {
   isLoading = true;
   paymentStatus: string | null = null;
   selectedPlan: string | null = null;
+  error: string | null = null;
+  isProcessing: boolean = false;
 
   // Navigation state for dynamic content loading
   currentView: string = 'overview'; // overview, jobs, verification, subscription, profile
@@ -256,13 +258,15 @@ export class DashboardComponent implements OnInit {
     if (this.isLoading) return;
 
     this.isLoading = true;
+    this.isProcessing = true;
     this.selectedPlan = plan.id;
+    this.error = null;
 
     // Prepare payment data for Pesapal
     const paymentData = {
       planType: plan.id as 'monthly' | 'annual' | 'per_job',
       amount: plan.price,
-      currency: 'UGX',
+      currency: plan.currency || 'UGX',
     };
 
     // Call subscription service to initiate subscription
@@ -273,23 +277,21 @@ export class DashboardComponent implements OnInit {
           this.subscriptionStatus = 'active';
           this.selectedPlan = null;
           this.isLoading = false;
-          // Optionally update dashboardStats or show a success message
+          this.isProcessing = false;
           this.dashboardStats.subscriptionStatus = 'active';
-          // You can also store subscription details if needed:
-          // this.currentSubscription = response.data.subscription;
         } else {
           // Show error message from backend
-          console.error('Subscription activation failed:', response.message);
+          this.error = response?.message || 'Subscription activation failed.';
           this.isLoading = false;
+          this.isProcessing = false;
           this.selectedPlan = null;
-          // Optionally show error to user
         }
       },
       error: (error: any) => {
-        console.error('Subscription activation failed:', error);
+        this.error = error?.error?.message || 'Failed to activate subscription. Please try again.';
         this.isLoading = false;
+        this.isProcessing = false;
         this.selectedPlan = null;
-        // Optionally show error to user
       },
     });
   }
