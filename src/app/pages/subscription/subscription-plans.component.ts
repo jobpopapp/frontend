@@ -19,12 +19,9 @@ export class SubscriptionPlansComponent implements OnInit {
     }
     return 'monthly'; // fallback
   }
-  plans = [
-    { id: 'monthly', name: 'Monthly', price: 40000, features: ['Unlimited jobs', 'Support'], description: 'Pay monthly (UGX).' },
-    { id: 'annual', name: 'Annual', price: 400000, features: ['Unlimited jobs', 'Priority support'], description: 'Pay annually and save (UGX).' },
-    { id: 'per_job', name: 'Per Job', price: 8000, features: ['Single job post'], description: 'Pay per job post (UGX).' }
-  ];
-  loading = false;
+  plans: any[] = [];
+  loading: { [key: string]: boolean } = {};
+  isProcessing = false;
   error: string | null = null;
   billingAddress: BillingAddress | null = null;
   billingMissing: boolean = false;
@@ -36,14 +33,44 @@ export class SubscriptionPlansComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('=== SubscriptionPlansComponent ngOnInit called ===');
     this.billingService.getBillingAddress().subscribe({
       next: (address) => {
         this.billingAddress = address;
-        // Check if required fields are present
         this.billingMissing = !address || !address.email_address || !address.first_name || !address.last_name;
       },
-      error: () => {
+      error: (err) => {
         this.billingMissing = true;
+      }
+    });
+
+    console.log('Fetching subscription plans from backend...');
+    this.subscriptionService.getPlans().subscribe({
+      next: (response) => {
+        // Always log the full response
+        console.log('[SubscriptionPlansComponent] API /subscription/plans response:', response);
+        let plansData: any[] = [];
+        if (response && response.success && Array.isArray(response.data)) {
+          plansData = response.data;
+        } else if (response && Array.isArray(response.data)) {
+          plansData = response.data;
+        } else if (Array.isArray(response)) {
+          plansData = response;
+        } else {
+          console.warn('[SubscriptionPlansComponent] Unrecognized plans response format:', response);
+        }
+        this.plans = plansData.map(plan => ({
+          ...plan,
+          features: Array.isArray(plan.features) ? plan.features : []
+        }));
+        // Log the final plans array
+        console.log('[SubscriptionPlansComponent] Final plans array:', this.plans);
+        console.log('[SubscriptionPlansComponent] Plans count:', this.plans.length);
+      },
+      error: (err) => {
+        console.error('[SubscriptionPlansComponent] Error fetching plans:', err);
+        this.error = 'Failed to load subscription plans.';
+        this.plans = [];
       }
     });
   }
@@ -53,32 +80,44 @@ export class SubscriptionPlansComponent implements OnInit {
       this.router.navigate(['/billing-address']);
       return;
     }
-    this.loading = true;
-    // Find selected plan details
+
+    this.loading[planId] = true;
+    this.isProcessing = true; // Show the processing modal
+
     const selectedPlan = this.plans.find(p => p.id === planId);
     if (!selectedPlan) {
       this.error = 'Invalid plan selected.';
-      this.loading = false;
+      this.loading[planId] = false;
+      this.isProcessing = false;
       return;
     }
-    // Build PaymentRequest payload
+
     const payload = {
       planType: planId,
       amount: selectedPlan.price,
-      currency: 'UGX'
+      currency: selectedPlan.currency
     };
+
     this.subscriptionService.initiatePayment(payload).subscribe({
       next: (response) => {
-        if (response && response.data && response.data.payment_url) {
-          window.location.href = response.data.payment_url;
+        if (response && response.success && response.data && response.data.subscription) {
+          // Subscription activated successfully
+          this.error = null;
+          this.loading[planId] = false;
+          this.isProcessing = false;
+          // Show success message or redirect to dashboard
+          alert('Subscription activated successfully!');
+          this.router.navigate(['/dashboard']);
         } else {
-          this.error = 'Payment initiation failed: No payment URL received.';
-          this.loading = false;
+          this.error = response?.message || 'Subscription activation failed.';
+          this.loading[planId] = false;
+          this.isProcessing = false;
         }
       },
       error: (err) => {
-        this.error = 'Failed to initiate payment. Please ensure your billing address is saved.';
-        this.loading = false;
+        this.error = err?.error?.message || 'Failed to activate subscription. Please try again.';
+        this.loading[planId] = false;
+        this.isProcessing = false;
       }
     });
   }

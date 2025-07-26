@@ -17,7 +17,7 @@ export interface BillingAddress {
 
 @Injectable({ providedIn: 'root' })
 export class BillingService {
-  private apiUrl = '/api/billing-address';
+  private apiUrl = '/api/billing';
 
   constructor(private http: HttpClient) {}
 

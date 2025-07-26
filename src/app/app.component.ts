@@ -1,6 +1,8 @@
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { WebsocketService } from './services/websocket.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,11 +13,15 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
+
 export class AppComponent implements OnInit, OnDestroy {
   title = 'jobpop-company-frontend';
   private destroy$ = new Subject<void>();
-
-  constructor(private websocketService: WebsocketService, private router: Router) {}
+  constructor(
+    private websocketService: WebsocketService,
+    private router: Router,
+    public location: Location
+  ) {}
 
   ngOnInit() {
     const updates$ = this.websocketService.getSubscriptionUpdates();

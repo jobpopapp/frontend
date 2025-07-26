@@ -10,6 +10,12 @@
 
     <!-- Dashboard Content -->
     <div class="container-fluid p-4">
+      <div *ngIf="paymentStatus === 'success'" class="alert alert-success">
+        Payment successful! Your subscription is now active.
+      </div>
+      <div *ngIf="paymentStatus === 'failed'" class="alert alert-danger">
+        Payment failed. Please try again.
+      </div>
       <!-- Dashboard Overview -->
       <div *ngIf="currentView === 'overview'">
         <!-- Account Verification Section -->
@@ -323,7 +329,7 @@
                     >
                       <div
                         class="plan-card h-100"
-                        [class.popular]="plan.popular"
+                        [class.popular]="plan.is_popular"
                         [class.selected]="selectedPlan === plan.id"
                       >
                         <!-- Popular Badge -->
@@ -343,21 +349,19 @@
                         <!-- Pricing -->
                         <div class="plan-pricing text-center mb-4">
                           <div class="price-display">
-                            <span class="price display-4 fw-bold">{{
-                              plan.priceText
-                            }}</span>
+                            <span class="price display-4 fw-bold">{{ plan.currency }} {{ plan.price }}</span>
                             <span class="duration text-muted d-block">{{
-                              plan.durationText
+                              plan.id === 'per_job' ? 'per job posting' : (plan.duration_days === 30 ? 'per month' : 'per year')
                             }}</span>
                           </div>
 
                           <!-- Special savings notice for annual -->
                           <div
-                            *ngIf="plan.id === 'annual'"
+                            *ngIf="plan.id === 'annual' && plan.features.includes('Save vs monthly')"
                             class="savings-notice mt-3"
                           >
                             <i class="bi bi-piggy-bank-fill"></i>
-                            <span>Save $100 compared to monthly billing</span>
+                            <span>Save vs monthly billing</span>
                           </div>
                         </div>
 

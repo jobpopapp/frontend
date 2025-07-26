@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { Subscription, SubscriptionPlan, PaymentRequest, ApiResponse } from '../interfaces';
 
@@ -11,52 +11,8 @@ export class SubscriptionService {
   constructor(private apiService: ApiService) { }
 
   // Get available subscription plans
-  getPlans(): SubscriptionPlan[] {
-    return [
-      {
-        id: 'monthly',
-        name: 'Monthly Plan',
-        description: 'Perfect for small businesses with occasional hiring needs',
-        price: 50.00,
-        currency: 'USD',
-        duration_days: 30,
-        features: [
-          'Unlimited job postings',
-          'Job management dashboard',
-          'Email support',
-          '30 days validity'
-        ]
-      },
-      {
-        id: 'annual',
-        name: 'Annual Plan',
-        description: 'Best value for growing companies with regular hiring',
-        price: 500.00,
-        currency: 'USD',
-        duration_days: 365,
-        popular: true,
-        features: [
-          'Unlimited job postings',
-          'Job management dashboard',
-          'Priority email support',
-          '365 days validity',
-          'Save $100 compared to monthly'
-        ]
-      },
-      {
-        id: 'per_job',
-        name: 'Per Job Plan',
-        description: 'Pay as you go - ideal for one-time hiring',
-        price: 30.00,
-        currency: 'USD',
-        features: [
-          'Single job posting',
-          'Job management dashboard',
-          'Email support',
-          'No expiry date'
-        ]
-      }
-    ];
+  getPlans(): Observable<ApiResponse<SubscriptionPlan[]>> {
+    return this.apiService.get<SubscriptionPlan[]>('/subscription/plans');
   }
 
   // Get current subscription
@@ -71,8 +27,7 @@ export class SubscriptionService {
 
   // Initiate payment with Pesapal
   initiatePayment(paymentData: PaymentRequest): Observable<ApiResponse<{
-    payment_url: string;
-    order_tracking_id: string;
+    subscription?: any;
   }>> {
     return this.apiService.post('/subscription/simulate-payment', paymentData);
   }
@@ -134,8 +89,10 @@ export class SubscriptionService {
   }
 
   // Get plan by ID
-  getPlanById(planId: string): SubscriptionPlan | null {
-    return this.getPlans().find(plan => plan.id === planId) || null;
+  getPlanById(planId: string): Observable<SubscriptionPlan | null> {
+    return this.getPlans().pipe(
+      map(response => response.data ? response.data.find(plan => plan.id === planId) || null : null)
+    );
   }
 
   // Check if subscription is active
@@ -174,7 +131,14 @@ export class SubscriptionService {
   }
 
   // Get recommended plan
-  getRecommendedPlan(): SubscriptionPlan {
-    return this.getPlans().find(plan => plan.popular) || this.getPlans()[0];
+  getRecommendedPlan(): Observable<SubscriptionPlan | null> {
+    return this.getPlans().pipe(
+      map(response => {
+        if (response.data) {
+          return response.data.find(plan => plan.popular) || response.data[0] || null;
+        }
+        return null;
+      })
+    );
   }
 }
