@@ -50,14 +50,29 @@ export class SubscriptionService {
     return this.apiService.post('/subscription/reactivate', {});
   }
 
-  // Get subscription status
-  getSubscriptionStatus(): Observable<ApiResponse<{
-    subscription?: Subscription;
-    status: string;
-    isActive: boolean;
-    daysRemaining: number;
-  }>> {
-    return this.apiService.get('/subscription/status');
+  // Get subscription status as 'active' | 'expired' | 'none'
+  getSubscriptionStatus(): Observable<'active' | 'expired' | 'none'> {
+    return this.apiService.get<any>('/subscription/status').pipe(
+      map((response) => {
+        // Defensive: handle both ApiResponse and direct object
+        const data = response?.data || response;
+        if (data && typeof data.is_active === 'boolean') {
+          if (data.is_active) {
+            // Check if expired
+            const now = new Date();
+            const endDate = new Date(data.end_date);
+            if (endDate > now) {
+              return 'active';
+            } else {
+              return 'expired';
+            }
+          } else {
+            return 'expired';
+          }
+        }
+        return 'none';
+      })
+    );
   }
 
   // Update auto-renewal setting

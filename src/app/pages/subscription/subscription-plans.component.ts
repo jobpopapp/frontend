@@ -2,11 +2,12 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { SubscriptionService } from '../../core/services/subscription.service';
+import { SubscriptionService, SubscriptionStatusString } from '../../services/subscription.service';
 import { BillingService, BillingAddress } from '../../services/billing.service';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-subscription-plans',
@@ -28,6 +29,7 @@ export class SubscriptionPlansComponent implements OnInit {
   error: string | null = null;
   billingAddress: BillingAddress | null = null;
   billingMissing: boolean = false;
+  subscriptionStatus: SubscriptionStatusString | null = null;
 
   constructor(
     private subscriptionService: SubscriptionService,
@@ -74,6 +76,18 @@ export class SubscriptionPlansComponent implements OnInit {
         console.error('[SubscriptionPlansComponent] Error fetching plans:', err);
         this.error = 'Failed to load subscription plans.';
         this.plans = [];
+      }
+    });
+
+    // Fetch subscription status
+    this.subscriptionService.getSubscriptionStatus().subscribe({
+      next: (status) => {
+        this.subscriptionStatus = status;
+        console.log('[SubscriptionPlansComponent] Subscription Status:', status);
+      },
+      error: (err) => {
+        console.error('[SubscriptionPlansComponent] Error fetching subscription status:', err);
+        this.subscriptionStatus = null; // Or set a default inactive status
       }
     });
   }

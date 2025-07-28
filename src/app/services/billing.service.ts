@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from '../core/services/auth.service';
+import { HttpParams } from '@angular/common/http';
 
 export interface BillingAddress {
+  id?: string;
+  company_id?: string; // Add company_id to the interface
   email_address: string;
   phone_number?: string;
   country_code?: string;
@@ -17,15 +21,32 @@ export interface BillingAddress {
 
 @Injectable({ providedIn: 'root' })
 export class BillingService {
-  private apiUrl = '/api/billing';
+  private apiUrl = '/api/billing-address';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getBillingAddress(): Observable<BillingAddress> {
-    return this.http.get<BillingAddress>(this.apiUrl);
+    const companyId = this.authService.getCurrentCompanyId();
+    if (!companyId) {
+      throw new Error('Company ID not available.');
+    }
+    let params = new HttpParams().set('company_id', companyId);
+    return this.http.get<BillingAddress>(this.apiUrl, { params });
   }
 
   saveBillingAddress(addressData: BillingAddress): Observable<BillingAddress> {
-    return this.http.post<BillingAddress>(this.apiUrl, addressData);
+    const companyId = this.authService.getCurrentCompanyId();
+    if (!companyId) {
+      throw new Error('Company ID not available.');
+    }
+    const dataToSend = { ...addressData, company_id: companyId };
+
+    if (addressData.id) {
+      // Update existing address
+      return this.http.put<BillingAddress>(`${this.apiUrl}/${addressData.id}`, dataToSend);
+    } else {
+      // Create new address
+      return this.http.post<BillingAddress>(this.apiUrl, dataToSend);
+    }
   }
 }

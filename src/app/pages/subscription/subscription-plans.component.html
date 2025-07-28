@@ -12,6 +12,26 @@
       <h3>Choose a Subscription Plan</h3>
       <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
+      <!-- Subscription Status Display -->
+      <div *ngIf="subscriptionStatus" class="card mb-4 p-3">
+        <h4>Your Current Subscription</h4>
+        <p>
+          Status:
+          <span
+            [class.text-success]="subscriptionStatus === 'active'"
+            [class.text-danger]="subscriptionStatus !== 'active'"
+          >
+            {{ subscriptionStatus === "active" ? "Active" : "Inactive" }}
+          </span>
+        </p>
+        <div
+          *ngIf="subscriptionStatus === 'none'"
+          class="alert alert-info mt-2"
+        >
+          No Active Plan
+        </div>
+      </div>
+
       <!-- Show message if no plans -->
       <div *ngIf="plans.length === 0" class="alert alert-info">
         <strong>No subscription plans available.</strong>
@@ -19,6 +39,11 @@
           If you're seeing this, check the browser console for API response
           details.
         </p>
+      </div>
+
+      <!-- Single billing missing message -->
+      <div *ngIf="billingMissing" class="alert alert-warning mb-4">
+        Please save your billing address before subscribing.
       </div>
 
       <!-- "Processing Subscription..." Modal -->
@@ -31,12 +56,23 @@
 
       <div class="row">
         <div class="col-md-4" *ngFor="let plan of plans">
-          <div class="plan-card card mb-4" [class.popular]="plan.is_popular">
+          <div
+            class="plan-card card mb-4"
+            [class.popular]="plan.is_popular"
+            [ngClass]="{
+              'monthly-plan': plan.id === 'monthly',
+              'annual-plan': plan.id === 'annual',
+              'per-job-plan': plan.id === 'per_job'
+            }"
+          >
             <div class="card-body">
               <h4>{{ plan.name }}</h4>
               <p>{{ plan.description }}</p>
-              <ul>
-                <li *ngFor="let feature of plan.features">{{ feature }}</li>
+              <ul class="list-unstyled">
+                <li *ngFor="let feature of plan.features">
+                  <i class="bi bi-check-circle-fill text-success me-2"></i
+                  >{{ feature }}
+                </li>
               </ul>
               <div class="price mb-2">
                 {{ plan.currency || "UGX" }} {{ plan.price }}
@@ -44,7 +80,7 @@
               <button
                 class="btn btn-primary w-100"
                 (click)="subscribe(asPlanType(plan.id))"
-                [disabled]="loading[plan.id] || billingMissing"
+                [disabled]="loading[plan.id]"
               >
                 <span
                   *ngIf="loading[plan.id]"
@@ -54,9 +90,6 @@
                 ></span>
                 {{ loading[plan.id] ? "Loading..." : "Subscribe" }}
               </button>
-              <div *ngIf="billingMissing" class="alert alert-warning mt-2">
-                Please save your billing address before subscribing.
-              </div>
             </div>
           </div>
         </div>

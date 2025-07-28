@@ -95,28 +95,12 @@ export class SidebarComponent implements OnInit {
 
   private loadSubscriptionStatus(): void {
     this.subscriptionService.getSubscriptionStatus().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          // Map the correct field names from backend
-          const isActive = response.data.isActive || false;
-          const daysRemaining = response.data.daysRemaining || 0;
-          const status = response.data.status || 'none';
-          
-          // Determine subscription status based on backend response
-          if (isActive && status === 'active') {
-            this.subscriptionStatus = 'active';
-          } else if (status === 'expired') {
-            this.subscriptionStatus = 'expired';
-          } else {
-            this.subscriptionStatus = 'none';
-          }
-          
-          this.daysLeft = daysRemaining;
-        }
+      next: (status) => {
+        this.subscriptionStatus = status;
+        // Optionally, fetch daysLeft separately if needed
       },
       error: (error) => {
         console.error('Error loading subscription status:', error);
-        // Set default values
         this.subscriptionStatus = 'none';
         this.daysLeft = 0;
       }

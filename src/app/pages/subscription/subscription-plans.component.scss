@@ -1,14 +1,114 @@
-.subscription-plans-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  background: #fff;
-  border-radius: 8px;
-}
 .plan-card {
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+
+  .card-body {
+    padding: 25px;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    min-height: 40px; /* Ensure consistent height */
+  }
+
+  ul {
+    padding-left: 0;
+    margin-bottom: 20px;
+
+    li {
+      list-style: none;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: #343a40;
+
+      i {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  &.popular {
+    border-color: #28a745;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);
+
+    .card-body {
+      background-color: #f0fff4; /* Light green background */
+    }
+
+    .badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      border-radius: 50px;
+      background-color: #28a745 !important;
+      color: white;
+    }
+  }
+
+  // Specific styles for each plan type
+  &.monthly-plan {
+    border-top: 5px solid #007bff; // Blue accent
+    .price {
+      color: #007bff;
+    }
+  }
+
+  &.annual-plan {
+    border-top: 5px solid #ffc107; // Yellow accent
+    .price {
+      color: #ffc107;
+    }
+  }
+
+  &.per-job-plan {
+    border-top: 5px solid #6f42c1; // Purple accent
+    .price {
+      color: #6f42c1;
+    }
+  }
 }
-.price {
-  font-size: 1.25rem;
-  font-weight: bold;
+
+.processing-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Above other content */
+
+  .modal-content {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #343a40;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
 }
