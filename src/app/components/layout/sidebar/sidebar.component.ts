@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SubscriptionService } from '../../../core/services/subscription.service';
+import { Subscription } from '../../../core/interfaces';
 import { Company } from '../../../core/interfaces';
 
 @Component({
@@ -19,6 +20,7 @@ export class SidebarComponent implements OnInit {
   isJobsMenuOpen = false;
   subscriptionStatus: 'active' | 'expired' | 'none' = 'none';
   daysLeft = 0;
+  private currentSubscription: Subscription | null = null;
   isVerified = false;
 
   constructor(
@@ -96,8 +98,21 @@ export class SidebarComponent implements OnInit {
   private loadSubscriptionStatus(): void {
     this.subscriptionService.getSubscriptionStatus().subscribe({
       next: (status) => {
-        this.subscriptionStatus = status;
-        // Optionally, fetch daysLeft separately if needed
+        if (status && typeof status.is_active === 'boolean') {
+          const now = new Date();
+          const endDate = new Date(status.end_date);
+          this.daysLeft = Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+          if (status.is_active && endDate > now) {
+            this.subscriptionStatus = 'active';
+          } else if (endDate <= now) {
+            this.subscriptionStatus = 'expired';
+          } else {
+            this.subscriptionStatus = 'none';
+          }
+        } else {
+          this.subscriptionStatus = 'none';
+          this.daysLeft = 0;
+        }
       },
       error: (error) => {
         console.error('Error loading subscription status:', error);

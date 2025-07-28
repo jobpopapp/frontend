@@ -140,16 +140,28 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    // Load subscription status
+    // Load subscription status and days left from /subscription/status
     this.subscriptionService.getSubscriptionStatus().subscribe({
-          next: status => {
-            this.subscriptionStatus = status;
-            this.dashboardStats.subscriptionStatus = status;
-            // Optionally, you can fetch days left if needed from another endpoint
+      next: (status) => {
+        if (status && typeof status.is_active === 'boolean') {
+          const now = new Date();
+          const endDate = new Date(status.end_date);
+          this.subscriptionDaysLeft = Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+          if (status.is_active && endDate > now) {
+            this.subscriptionStatus = 'active';
+          } else if (endDate <= now) {
+            this.subscriptionStatus = 'expired';
+          } else {
+            this.subscriptionStatus = 'none';
+          }
+        } else {
+          this.subscriptionStatus = 'none';
+          this.subscriptionDaysLeft = 0;
+        }
+        this.dashboardStats.subscriptionStatus = this.subscriptionStatus;
       },
-      error: error => {
+      error: (error) => {
         console.error('Error loading subscription status:', error);
-        // Set default values
         this.subscriptionStatus = 'none';
         this.subscriptionDaysLeft = 0;
       },
