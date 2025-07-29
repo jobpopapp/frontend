@@ -12,12 +12,12 @@ export class JobService {
 
   // Get all jobs for the company
   getCompanyJobs(): Observable<ApiResponse<Job[]>> {
-    return this.apiService.get<Job[]>('/jobs');
+    return this.apiService.get<Job[]>('/jobs/my');
   }
 
   // Get all jobs for the company with pagination
   getJobs(page: number = 1, limit: number = 10, filters?: any): Observable<PaginatedResponse<Job>> {
-    return this.apiService.getPaginated<Job>('/jobs', page, limit, filters);
+    return this.apiService.getPaginated<Job>('/jobs/my', page, limit, filters);
   }
 
   // Get single job by ID
