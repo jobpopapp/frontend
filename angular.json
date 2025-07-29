@@ -73,7 +73,8 @@
               "buildTarget": "jobpop-company-frontend:build:production"
             },
             "development": {
-              "buildTarget": "jobpop-company-frontend:build:development"
+              "buildTarget": "jobpop-company-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
