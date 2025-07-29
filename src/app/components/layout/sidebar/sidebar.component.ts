@@ -132,7 +132,7 @@ export class SidebarComponent implements OnInit {
   }
 
   navigateToJobs(): void {
-    this.navigationChange.emit('jobs');
+    this.router.navigate(['/dashboard'], { queryParams: { view: 'jobs' } });
   }
 
   navigateToJobForm(): void {

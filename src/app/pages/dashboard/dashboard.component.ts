@@ -71,6 +71,21 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params: Params) => {
       this.paymentStatus = params['payment'];
+      if (params['view']) {
+        this.currentView = params['view'];
+        if (this.currentView === 'jobs') {
+          this.jobService.getJobs(1, 100).subscribe({
+            next: response => {
+              if (response.success) {
+                this.recentJobs = response.data || [];
+              }
+            },
+            error: error => {
+              console.error('Error loading jobs for job management view:', error);
+            }
+          });
+        }
+      }
     });
     this.loadDashboardData();
     this.subscriptionService.getPlans().subscribe({
