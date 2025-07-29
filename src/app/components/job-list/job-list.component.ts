@@ -177,9 +177,13 @@ export class JobListComponent implements OnInit {
   }
 
   // Utility methods
-  getJobDescriptionPreview(description: string): string {
+  getJobDescriptionPreview(description: string | undefined): string {
     if (!description) return 'No description available';
-    return description.length > 120 ? description.substring(0, 120) + '...' : description;
+    const words = description.split(' ');
+    if (words.length > 10) {
+      return words.slice(0, 10).join(' ') + '...';
+    }
+    return description;
   }
 
   getDaysRemaining(expiresAt: string | undefined): number {

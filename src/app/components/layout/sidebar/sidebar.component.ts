@@ -132,11 +132,11 @@ export class SidebarComponent implements OnInit {
   }
 
   navigateToJobs(): void {
-    this.navigateTo('jobs');
+    this.navigationChange.emit('jobs');
   }
 
   navigateToJobForm(): void {
-    this.navigateTo('job-form');
+    this.router.navigate(['/jobs/new']);
   }
 
   navigateToSubscription(): void {

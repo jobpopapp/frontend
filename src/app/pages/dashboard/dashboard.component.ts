@@ -201,6 +201,18 @@ export class DashboardComponent implements OnInit {
   // Navigation methods for dynamic content loading
   navigateToView(view: string): void {
     this.currentView = view;
+    if (view === 'jobs') {
+      this.jobService.getJobs(1, 100).subscribe({
+        next: response => {
+          if (response.success) {
+            this.recentJobs = response.data || [];
+          }
+        },
+        error: error => {
+          console.error('Error loading jobs for job management view:', error);
+        }
+      });
+    }
   }
 
   onVerificationComplete(): void {

@@ -176,7 +176,7 @@ export class JobFormComponent implements OnInit {
     this.jobService.getJob(this.jobId).subscribe({
       next: (response: any) => {
         console.log('[JobFormComponent] Job data fetched successfully:', response);
-        const job = response.job || response.data || response;
+        const job = response.job || response.data; // Extract the nested job object
         this.populateForm(job);
         this.isLoading = false;
       },
@@ -255,9 +255,11 @@ export class JobFormComponent implements OnInit {
         
         // Show success message or redirect
         if (this.isEdit) {
-          console.log('Job updated successfully');
+          alert('Job updated successfully!');
+          this.router.navigate(['/dashboard']);
         } else {
-          console.log('Job created successfully');
+          alert('Job created successfully!');
+          this.router.navigate(['/dashboard']);
         }
       },
       error: (error: any) => {
@@ -288,10 +290,12 @@ export class JobFormComponent implements OnInit {
     request.subscribe({
       next: (response: any) => {
         console.log('Draft saved successfully');
+        alert('Job saved as draft!');
         this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Failed to save draft:', error);
+        alert('Failed to save draft. Please try again.');
         this.isLoading = false;
       }
     });
@@ -323,11 +327,11 @@ export class JobFormComponent implements OnInit {
 
   cancel(): void {
     if (this.jobForm.dirty) {
-      const confirmed = confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');
+      const confirmed = confirm('Are you sure you want to close? Any unsaved changes will be lost.');
       if (!confirmed) return;
     }
     
-    this.jobCancelled.emit();
+    this.router.navigate(['/dashboard']);
   }
 
   previewJob(): void {
