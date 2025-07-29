@@ -98,7 +98,7 @@ export class JobListComponent implements OnInit {
       const searchLower = this.searchTerm.toLowerCase();
       filtered = filtered.filter(job => 
         job.title.toLowerCase().includes(searchLower) ||
-        job.location.toLowerCase().includes(searchLower) ||
+        (job.country && job.country.toLowerCase().includes(searchLower)) ||
         (job.description && job.description.toLowerCase().includes(searchLower))
       );
     }

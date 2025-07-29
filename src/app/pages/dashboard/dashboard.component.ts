@@ -11,6 +11,7 @@ import {
 } from '../../components/account-verification/account-verification.component';
 import { JobListComponent } from '../../components/job-list/job-list.component';
 import { JobFormComponent } from '../../components/job-form/job-form.component';
+import { JobDetailModalComponent } from '../../components/job-detail-modal/job-detail-modal.component';
 import { Company, Job, DashboardStats, JobCategory } from '../../core/interfaces';
 
 @Component({
@@ -25,6 +26,7 @@ import { Company, Job, DashboardStats, JobCategory } from '../../core/interfaces
     AccountVerificationComponent,
     JobListComponent,
     JobFormComponent,
+    JobDetailModalComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -51,6 +53,10 @@ export class DashboardComponent implements OnInit {
 
   // Navigation state for dynamic content loading
   currentView: string = 'overview'; // overview, jobs, verification, subscription, profile
+
+  // Job Detail Modal properties
+  isJobDetailModalVisible: boolean = false;
+  selectedJobForModal: Job | null = null;
 
   // Subscription Plans Data
   subscriptionPlans: any[] = [];
@@ -303,5 +309,16 @@ export class DashboardComponent implements OnInit {
         this.selectedPlan = null;
       },
     });
+  }
+
+  // Job Detail Modal methods
+  openJobDetailModal(job: Job): void {
+    this.selectedJobForModal = job;
+    this.isJobDetailModalVisible = true;
+  }
+
+  closeJobDetailModal(): void {
+    this.isJobDetailModalVisible = false;
+    this.selectedJobForModal = null;
   }
 }
