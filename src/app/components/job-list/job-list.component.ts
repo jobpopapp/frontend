@@ -15,9 +15,20 @@ import { Job, JobCategory } from '../../core/interfaces';
 export class JobListComponent implements OnInit {
   @Input() jobCategories: JobCategory[] = [];
 
-  getCategoryLabel(category: string | number): string {
-    const found = this.jobCategories.find(cat => String(cat.id) === String(category) || cat.name === category);
-    return found ? found.name : (typeof category === 'string' ? category : '');
+  getCategoryLabel(category: { id: string; name: string } | string | number | undefined): string {
+    if (!category) return '';
+
+    let categoryId: string | number;
+    if (typeof category === 'object' && category.id) {
+      categoryId = category.id;
+    } else if (typeof category === 'string' || typeof category === 'number') {
+      categoryId = category;
+    } else {
+      return '';
+    }
+
+    const found = this.jobCategories.find(cat => String(cat.id) === String(categoryId) || cat.name === categoryId);
+    return found ? found.name : (typeof categoryId === 'string' ? categoryId : '');
   }
   @Input() jobs: Job[] = [];
   @Output() jobAction = new EventEmitter<{action: string, jobId: string}>();
@@ -262,7 +273,7 @@ export class JobListComponent implements OnInit {
         requirements: 'Bachelor\'s degree in Computer Science, 5+ years experience',
         location: 'Nairobi, Kenya',
         job_type: 'full-time',
-        category: 'Technology',
+        category: { id: 'technology', name: 'Technology' },
         salary_range: '$80,000 - $120,000',
         status: 'active',
         featured: true,
@@ -281,7 +292,7 @@ export class JobListComponent implements OnInit {
         requirements: 'Bachelor\'s degree in Marketing, 3+ years experience',
         location: 'Mombasa, Kenya',
         job_type: 'full-time',
-        category: 'Marketing',
+        category: { id: 'marketing', name: 'Marketing' },
         salary_range: '$50,000 - $70,000',
         status: 'active',
         featured: false,
@@ -300,7 +311,7 @@ export class JobListComponent implements OnInit {
         requirements: 'Portfolio required, 2+ years experience with design tools',
         location: 'Remote',
         job_type: 'contract',
-        category: 'Design',
+        category: { id: 'design', name: 'Design' },
         salary_range: '$60,000 - $90,000',
         status: 'active',
         featured: false,
@@ -319,7 +330,7 @@ export class JobListComponent implements OnInit {
         requirements: 'Bachelor\'s degree, Python/SQL skills required',
         location: 'Kisumu, Kenya',
         job_type: 'part-time',
-        category: 'Analytics',
+        category: { id: 'analytics', name: 'Analytics' },
         salary_range: '$30,000 - $45,000',
         status: 'expired',
         featured: false,
@@ -338,7 +349,7 @@ export class JobListComponent implements OnInit {
         requirements: 'PMP certification preferred, 3+ years experience',
         location: 'Nakuru, Kenya',
         job_type: 'contract',
-        category: 'Management',
+        category: { id: 'management', name: 'Management' },
         salary_range: '$70,000 - $100,000',
         status: 'draft',
         featured: false,

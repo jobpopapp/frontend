@@ -172,44 +172,51 @@ export class JobFormComponent implements OnInit {
     if (!this.jobId) return;
 
     this.isLoading = true;
+    console.log(`[JobFormComponent] Fetching job data for ID: ${this.jobId}`);
     this.jobService.getJob(this.jobId).subscribe({
       next: (response: any) => {
-        const job = response.data || response;
+        console.log('[JobFormComponent] Job data fetched successfully:', response);
+        const job = response.job || response.data || response;
         this.populateForm(job);
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Failed to load job data:', error);
+        console.error('[JobFormComponent] Failed to load job data:', error);
         this.isLoading = false;
       }
     });
   }
 
-  private populateForm(job: Partial<Job>): void {
-    this.jobForm.patchValue({
+  private populateForm(response: any): void {
+    console.log('[JobFormComponent] Populating form with job data:', response);
+
+    const job = response.job; // Extract the nested job object
+
+    if (!job) {
+      console.error('[JobFormComponent] Job object not found in response.', response);
+      return;
+    }
+
+    const patchData = {
       title: job.title || '',
-      company: (job as any).company || '',
-      job_description: job.description || (job as any).job_description || '',
+      company: job.company || '',
+      job_description: job.job_description || job.description || '',
       requirements: job.requirements || '',
-      category: job.category || '',
-      country: (job as any).country || job.location || '',
-      salary: (job as any).salary || job.salary_range || '',
-      deadline: (job as any).deadline || '',
+      category_id: job.category_id ? String(job.category_id) : (job.category ? job.category.id : null), // Ensure category_id is a string
+      country: job.country || job.location || '',
+      city: job.city || '',
+      salary: job.salary || job.salary_range || '',
+      deadline: job.deadline ? new Date(job.deadline).toISOString().substring(0, 10) : '',
       is_foreign: job.is_foreign || false,
       email: job.email || '',
       phone: job.phone || '',
       application_link: job.application_link || '',
-      // Legacy fields for compatibility
-      description: job.description || '',
-      location: job.location || '',
-      salary_range: job.salary_range || '',
       job_type: job.job_type || 'full-time',
-      // Additional fields
-      job_duration: '',
-      experience_level: '',
-      visibility: 'public',
       whatsapp: job.whatsapp || ''
-    });
+    };
+
+    console.log('[JobFormComponent] Patching form with data:', patchData);
+    this.jobForm.patchValue(patchData);
 
     // Determine application method
     if (job.email) {

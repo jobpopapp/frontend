@@ -40,11 +40,13 @@ export interface Job {
   requirements: string;
   location: string;
   country?: string;
+  city?: string;
   salary_range: string;
   salary?: string;
   deadline?: string;
   job_type: 'full-time' | 'part-time' | 'contract' | 'internship';
-  category: string;
+  category?: { id: string; name: string; };
+  category_id?: string;
   is_foreign: boolean;
   email?: string;
   phone?: string;
