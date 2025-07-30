@@ -5,6 +5,9 @@ export interface Company {
   email: string;
   phone: string;
   country: string;
+  address?: string;
+  website?: string;
+  description?: string;
   is_verified: boolean;
   certificate_url?: string;
   created_at: string;

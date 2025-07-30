@@ -756,3 +756,21 @@ h6 {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Custom SweetAlert2 Styles */
+.custom-swal-popup {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #eee !important;
+}
+
+.custom-swal-title {
+  font-size: 1.8rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.custom-swal-html-container {
+  font-size: 1rem !important;
+  color: #555 !important;
+}

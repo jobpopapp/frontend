@@ -47,7 +47,74 @@ export class SidebarComponent implements OnInit {
   }
 
   viewProfile(): void {
-    this.router.navigate(['/profile']);
+    if (this.currentCompany) {
+      const company = this.currentCompany;
+      Swal.fire({
+        title: '<strong style="font-size: 1.5rem; color: #333;">Company Profile</strong>',
+        icon: 'info',
+        html: `
+          <div style="text-align: left; padding: 1rem;">
+            <p style="font-size: 1rem; color: #555;">
+              Here are your company details:
+            </p>
+            <hr style="margin: 1.5rem 0;">
+            <table class="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <td>${company.name || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td><a href="mailto:${company.email}">${company.email || 'N/A'}</a></td>
+                </tr>
+                <tr>
+                  <th>Phone</th>
+                  <td><a href="https://wa.me/${company.phone}" target="_blank">${company.phone || 'N/A'}</a></td>
+                </tr>
+                <tr>
+                  <th>Country</th>
+                  <td>${company.country || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>Verified</th>
+                  <td>${company.is_verified ? 'Yes' : 'No'}</td>
+                </tr>
+                ${company.certificate_url ? `
+                <tr>
+                  <th>Certificate</th>
+                  <td><a href="${company.certificate_url}" target="_blank">View Certificate</a></td>
+                </tr>
+                ` : ''}
+                <tr>
+                  <th>Created At</th>
+                  <td>${new Date(company.created_at).toLocaleDateString()}</td>
+                </tr>
+                <tr>
+                  <th>Updated At</th>
+                  <td>${new Date(company.updated_at).toLocaleDateString()}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `,
+        showCloseButton: true,
+        showConfirmButton: false,
+        focusConfirm: false,
+        customClass: {
+          popup: 'custom-swal-popup',
+          title: 'custom-swal-title',
+          htmlContainer: 'custom-swal-html-container'
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Profile Not Available',
+        text: 'Company profile data is not loaded yet.',
+        confirmButtonColor: '#3085d6'
+      });
+    }
   }
 
   viewSettings(): void {
@@ -55,12 +122,37 @@ export class SidebarComponent implements OnInit {
   }
 
   openSupport(): void {
-    // Open support modal or navigate to support page
     Swal.fire({
+      title: '<strong style="font-size: 1.5rem; color: #333;">Contact Support</strong>',
       icon: 'info',
-      title: 'Coming Soon!',
-      text: 'Support feature will be implemented in the next phase',
-      confirmButtonColor: '#3085d6'
+      html: `
+        <div style="text-align: left; padding: 1rem;">
+          <p style="font-size: 1rem; color: #555;">
+            For any questions, issues, or feedback, please reach out to our support team. We're here to help!
+          </p>
+          <hr style="margin: 1.5rem 0;">
+          <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <i class="bi bi-envelope-fill" style="font-size: 1.5rem; color: #007bff; margin-right: 1rem;"></i>
+            <a href="mailto:jobpopapp@gmail.com" style="font-size: 1rem; color: #007bff; text-decoration: none;">
+              jobpopapp@gmail.com
+            </a>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <i class="bi bi-whatsapp" style="font-size: 1.5rem; color: #25D366; margin-right: 1rem;"></i>
+            <a href="https://wa.me/256773913902" target="_blank" style="font-size: 1rem; color: #25D366; text-decoration: none;">
+              +256 773 913 902
+            </a>
+          </div>
+        </div>
+      `,
+      showCloseButton: true,
+      showConfirmButton: false,
+      focusConfirm: false,
+      customClass: {
+        popup: 'custom-swal-popup',
+        title: 'custom-swal-title',
+        htmlContainer: 'custom-swal-html-container'
+      }
     });
   }
 

@@ -79,7 +79,7 @@
   margin: 0.25rem 0;
   
   &:hover {
-    background-color: var(--accent-color);
+    background-color: rgba(255, 215, 0, 0.2); /* Yellow with 0.2 opacity */
     transform: translateX(4px);
   }
   
