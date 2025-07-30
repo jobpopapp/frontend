@@ -187,7 +187,7 @@
                     <div>
                       <h6 class="mb-1 fw-semibold">{{ job.title }}</h6>
                       <p class="text-muted small mb-1">
-                        {{ job.location }} • {{ job.job_type | titlecase }}
+                        {{ job.location }} • {{ job.job_type | titlecase }} • {{ job.category?.name }}
                       </p>
                       <span class="badge bg-success-subtle text-success small"
                         >Active</span

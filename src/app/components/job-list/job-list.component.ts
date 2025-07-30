@@ -66,9 +66,7 @@ export class JobListComponent implements OnInit {
       next: (response: any) => {
         this.allJobs = (response.data || response || []).map((job: any) => ({
           ...job,
-          category: job.category && typeof job.category === 'object'
-            ? job.category.id
-            : job.category,
+          category: job.categories,
           expires_at: job.expires_at || job.deadline // Use deadline if expires_at is not present
         }));
         this.jobs = this.allJobs;
@@ -78,15 +76,6 @@ export class JobListComponent implements OnInit {
       error: (error: any) => {
         console.error('Failed to load jobs:', error);
         this.isLoading = false;
-        // Set some mock data for demo purposes
-        this.allJobs = this.getMockJobs().map((job: any) => ({
-          ...job,
-          category: job.category && typeof job.category === 'object'
-            ? (job.category.id || job.category.name)
-            : job.category
-        }));
-        this.jobs = this.allJobs;
-        this.filterJobs();
       }
     });
   }
@@ -278,104 +267,5 @@ export class JobListComponent implements OnInit {
     };
   }
 
-  // Mock data for demo purposes
-  private getMockJobs(): Job[] {
-    return [
-      {
-        id: '1',
-        title: 'Senior Software Engineer',
-        description: 'We are looking for an experienced software engineer to join our growing team. You will be responsible for developing high-quality software solutions and mentoring junior developers.',
-        requirements: 'Bachelor\'s degree in Computer Science, 5+ years experience',
-        location: 'Nairobi, Kenya',
-        job_type: 'full-time',
-        category: { id: 'technology', name: 'Technology' },
-        salary_range: '$80,000 - $120,000',
-        status: 'active',
-        featured: true,
-        applications_count: 15,
-        views_count: 234,
-        created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        expires_at: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-        company_id: '1',
-        is_foreign: false
-      },
-      {
-        id: '2',
-        title: 'Marketing Manager',
-        description: 'Join our marketing team to drive brand awareness and lead generation. Experience with digital marketing and social media campaigns required.',
-        requirements: 'Bachelor\'s degree in Marketing, 3+ years experience',
-        location: 'Mombasa, Kenya',
-        job_type: 'full-time',
-        category: { id: 'marketing', name: 'Marketing' },
-        salary_range: '$50,000 - $70,000',
-        status: 'active',
-        featured: false,
-        applications_count: 8,
-        views_count: 156,
-        created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        expires_at: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-        company_id: '1',
-        is_foreign: false
-      },
-      {
-        id: '3',
-        title: 'UX/UI Designer',
-        description: 'Create amazing user experiences for our web and mobile applications. Strong portfolio and experience with Figma required.',
-        requirements: 'Portfolio required, 2+ years experience with design tools',
-        location: 'Remote',
-        job_type: 'contract',
-        category: { id: 'design', name: 'Design' },
-        salary_range: '$60,000 - $90,000',
-        status: 'active',
-        featured: false,
-        applications_count: 22,
-        views_count: 189,
-        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        expires_at: new Date(Date.now() + 23 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-        company_id: '1',
-        is_foreign: false
-      },
-      {
-        id: '4',
-        title: 'Data Analyst',
-        description: 'Analyze business data to provide insights and support decision-making. Experience with Python, SQL, and visualization tools required.',
-        requirements: 'Bachelor\'s degree, Python/SQL skills required',
-        location: 'Kisumu, Kenya',
-        job_type: 'part-time',
-        category: { id: 'analytics', name: 'Analytics' },
-        salary_range: '$30,000 - $45,000',
-        status: 'expired',
-        featured: false,
-        applications_count: 12,
-        views_count: 98,
-        created_at: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
-        expires_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-        company_id: '1',
-        is_foreign: false
-      },
-      {
-        id: '5',
-        title: 'Project Manager',
-        description: 'Lead cross-functional teams to deliver projects on time and within budget. PMP certification preferred.',
-        requirements: 'PMP certification preferred, 3+ years experience',
-        location: 'Nakuru, Kenya',
-        job_type: 'contract',
-        category: { id: 'management', name: 'Management' },
-        salary_range: '$70,000 - $100,000',
-        status: 'draft',
-        featured: false,
-        applications_count: 0,
-        views_count: 0,
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        expires_at: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-        company_id: '1',
-        is_foreign: false
-      }
-    ];
-  }
+  
 }
