@@ -31,7 +31,7 @@ export class JobListComponent implements OnInit {
     return found ? found.name : (typeof categoryId === 'string' ? categoryId : '');
   }
   @Input() jobs: Job[] = [];
-  @Output() jobAction = new EventEmitter<{action: string, jobId: string}>();
+  @Output() jobAction = new EventEmitter<{action: string, jobId: string, job?: Job}>();
   @Output() createJob = new EventEmitter<void>();
 
   // Filter properties
@@ -68,7 +68,8 @@ export class JobListComponent implements OnInit {
           ...job,
           category: job.category && typeof job.category === 'object'
             ? job.category.id
-            : job.category
+            : job.category,
+          expires_at: job.expires_at || job.deadline // Use deadline if expires_at is not present
         }));
         this.jobs = this.allJobs;
         this.filterJobs();
@@ -187,11 +188,17 @@ export class JobListComponent implements OnInit {
   }
 
   getDaysRemaining(expiresAt: string | undefined): number {
-    if (!expiresAt) return 0;
+    if (!expiresAt) {
+      console.log('getDaysRemaining: expiresAt is undefined or null');
+      return 0;
+    }
     const expiry = new Date(expiresAt);
     const now = new Date();
+    console.log('getDaysRemaining: Expiry Date:', expiry);
+    console.log('getDaysRemaining: Current Date:', now);
     const diffTime = expiry.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log('getDaysRemaining: Difference in days:', diffDays);
     return Math.max(0, diffDays);
   }
 
@@ -218,6 +225,10 @@ export class JobListComponent implements OnInit {
   viewApplications(jobId: string): void {
     this.jobAction.emit({ action: 'applications', jobId });
     this.router.navigate(['/jobs', jobId, 'applications']);
+  }
+
+  viewJobDetails(job: Job): void {
+    this.jobAction.emit({ action: 'view', jobId: job.id, job: job });
   }
 
   duplicateJob(jobId: string): void {

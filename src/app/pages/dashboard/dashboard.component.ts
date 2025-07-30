@@ -262,12 +262,17 @@ export class DashboardComponent implements OnInit {
   }
 
   // Job action handler
-  onJobAction(event: { action: string; jobId: string }): void {
+  onJobAction(event: { action: string; jobId: string; job?: Job }): void {
     console.log('Job action:', event);
     // Handle different job actions
     switch (event.action) {
       case 'edit':
         this.navigateToView('job-form');
+        break;
+      case 'view':
+        if (event.job) {
+          this.openJobDetailModal(event.job);
+        }
         break;
       case 'applications':
         // Navigate to applications view

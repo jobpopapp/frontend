@@ -1,8 +1,6 @@
 .navbar {
   z-index: 1040;
   border-bottom: 1px solid var(--border-color);
-  margin-left: 280px; /* To account for the fixed sidebar */
-  width: calc(100% - 280px); /* To ensure it doesn't overflow */
   
   .company-avatar {
     width: 32px;
