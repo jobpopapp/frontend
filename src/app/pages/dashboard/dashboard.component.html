@@ -160,7 +160,9 @@
                 class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center"
               >
                 <h5 class="card-title mb-0 fw-semibold">Recent Job Postings</h5>
-                <a (click)="navigateToView('jobs')" class="btn btn-sm btn-outline-primary"
+                <a
+                  (click)="navigateToView('jobs')"
+                  class="btn btn-sm btn-outline-primary"
                   >View All</a
                 >
               </div>
@@ -187,7 +189,8 @@
                     <div>
                       <h6 class="mb-1 fw-semibold">{{ job.title }}</h6>
                       <p class="text-muted small mb-1">
-                        {{ job.location }} • {{ job.job_type | titlecase }} • {{ job.category?.name }}
+                        {{ job.location }} • {{ job.job_type | titlecase }} •
+                        {{ job.category?.name }}
                       </p>
                       <span class="badge bg-success-subtle text-success small"
                         >Active</span
@@ -204,7 +207,10 @@
                         >
                           <i class="bi bi-pencil"></i>
                         </a>
-                        <button class="btn btn-outline-secondary btn-sm" (click)="openJobDetailModal(job)">
+                        <button
+                          class="btn btn-outline-secondary btn-sm"
+                          (click)="openJobDetailModal(job)"
+                        >
                           <i class="bi bi-eye"></i>
                         </button>
                       </div>
@@ -229,7 +235,10 @@
                   >
                     <i class="bi bi-plus-circle me-2"></i>Post New Job
                   </a>
-                  <a (click)="navigateToView('jobs')" class="btn btn-outline-primary">
+                  <a
+                    (click)="navigateToView('jobs')"
+                    class="btn btn-outline-primary"
+                  >
                     <i class="bi bi-briefcase me-2"></i>Manage Jobs
                   </a>
                   <a
@@ -255,10 +264,10 @@
       </div>
 
       <!-- Jobs View -->
-      <div *ngIf="currentView === 'jobs'">
+      <div class="" *ngIf="currentView === 'jobs'">
         <div class="row">
           <div class="col-12">
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 bg-lightgrey shadow-sm">
               <div class="card-header bg-transparent border-0">
                 <div class="d-flex justify-content-between align-items-center">
                   <h5 class="card-title mb-0 fw-semibold">Job Management</h5>
