@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { JobService } from '../../core/services/job.service';
 import { Job, JobCreateRequest } from '../../core/interfaces';
 import { JobCategory } from '../../core/interfaces';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-job-form',
@@ -255,11 +256,21 @@ export class JobFormComponent implements OnInit {
         
         // Show success message or redirect
         if (this.isEdit) {
-          alert('Job updated successfully!');
-          this.router.navigate(['/dashboard']);
+          Swal.fire({
+          icon: 'success',
+          title: 'Job Updated!',
+          text: 'Job updated successfully!',
+          confirmButtonColor: '#3085d6'
+        });
+        this.router.navigate(['/dashboard']);
         } else {
-          alert('Job created successfully!');
-          this.router.navigate(['/dashboard']);
+          Swal.fire({
+          icon: 'success',
+          title: 'Job Created!',
+          text: 'Job created successfully!',
+          confirmButtonColor: '#3085d6'
+        });
+        this.router.navigate(['/dashboard']);
         }
       },
       error: (error: any) => {
@@ -268,14 +279,24 @@ export class JobFormComponent implements OnInit {
         this.isLoading = false;
         
         // Show user-friendly error message
-        alert('Failed to save job. Please check all required fields and try again.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to save job. Please check all required fields and try again.',
+          confirmButtonColor: '#3085d6'
+        });
       }
     });
   }
 
   saveDraft(): void {
     if (!this.jobForm.get('title')?.value) {
-      alert('Please enter a job title before saving as draft');
+      Swal.fire({
+      icon: 'warning',
+      title: 'Missing Title',
+      text: 'Please enter a job title before saving as draft',
+      confirmButtonColor: '#3085d6'
+    });
       return;
     }
 
@@ -290,12 +311,22 @@ export class JobFormComponent implements OnInit {
     request.subscribe({
       next: (response: any) => {
         console.log('Draft saved successfully');
-        alert('Job saved as draft!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Draft Saved!',
+          text: 'Job saved as draft!',
+          confirmButtonColor: '#3085d6'
+        });
         this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Failed to save draft:', error);
-        alert('Failed to save draft. Please try again.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to save draft. Please try again.',
+          confirmButtonColor: '#3085d6'
+        });
         this.isLoading = false;
       }
     });

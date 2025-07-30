@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { DatePipe } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-subscription-plans',
@@ -123,7 +124,12 @@ export class SubscriptionPlansComponent implements OnInit {
           this.loading[planId] = false;
           this.isProcessing = false;
           // Show success message or redirect to dashboard
-          alert('Subscription activated successfully!');
+          Swal.fire({
+            icon: 'success',
+            title: 'Subscription Activated!',
+            text: 'Subscription activated successfully!',
+            confirmButtonColor: '#3085d6'
+          });
           this.router.navigate(['/dashboard']);
         } else {
           this.error = response?.message || 'Subscription activation failed.';

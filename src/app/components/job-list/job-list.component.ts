@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JobService } from '../../core/services/job.service';
 import { Job, JobCategory } from '../../core/interfaces';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-job-list',
@@ -235,18 +236,43 @@ export class JobListComponent implements OnInit {
   }
 
   deleteJob(jobId: string): void {
-    if (confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
-      this.jobAction.emit({ action: 'delete', jobId });
-      this.jobService.deleteJob(jobId).subscribe({
-        next: (response: any) => {
-          console.log('Job deleted successfully');
-          this.loadJobs(); // Refresh the list
-        },
-        error: (error: any) => {
-          console.error('Failed to delete job:', error);
-        }
-      });
-    }
+    this.jobAction.emit({ action: 'delete', jobId });
+    this.jobService.deleteJob(jobId).subscribe({
+      next: (response: any) => {
+        console.log('Job deleted successfully');
+        Swal.fire(
+          'Deleted!',
+          'Your job has been deleted.',
+          'success'
+        );
+        this.loadJobs(); // Refresh the list
+      },
+      error: (error: any) => {
+        console.error('Failed to delete job:', error);
+        Swal.fire(
+          'Error!',
+          'Failed to delete job.',
+          'error'
+        );
+      }
+    });
+  }
+
+  confirmDeleteJob(jobId: string): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this job!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteJob(jobId);
+      }
+    });
   }
 
   createNewJob(): void {

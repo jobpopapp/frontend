@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { WebsocketService } from './services/websocket.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,12 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(message => {
           if (message.status === 'ACTIVE') {
             // Show notification (can use a toast service)
-            alert('Subscription activated! You can now post jobs.');
+            Swal.fire({
+          icon: 'success',
+          title: 'Subscription Activated!',
+          text: 'You can now post jobs.',
+          confirmButtonColor: '#3085d6'
+        });
             // Redirect if on payment-complete page
             if (this.router.url.startsWith('/payment-complete')) {
               this.router.navigate(['/dashboard']);

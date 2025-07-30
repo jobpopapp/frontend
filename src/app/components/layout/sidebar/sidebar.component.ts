@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { SubscriptionService } from '../../../core/services/subscription.service';
 import { Subscription } from '../../../core/interfaces';
 import { Company } from '../../../core/interfaces';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sidebar',
@@ -55,7 +56,12 @@ export class SidebarComponent implements OnInit {
 
   openSupport(): void {
     // Open support modal or navigate to support page
-    alert('Support feature will be implemented in the next phase');
+    Swal.fire({
+      icon: 'info',
+      title: 'Coming Soon!',
+      text: 'Support feature will be implemented in the next phase',
+      confirmButtonColor: '#3085d6'
+    });
   }
 
   logout(): void {
