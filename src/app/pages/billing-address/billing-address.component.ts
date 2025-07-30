@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { finalize } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-billing-address',
@@ -61,13 +62,21 @@ export class BillingAddressComponent implements OnInit {
     ).subscribe({
       next: (updated) => {
         this.billingAddress = updated;
-        this.success = true;
-        setTimeout(() => this.success = false, 3000);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Billing address saved successfully.',
+          timer: 3000,
+          showConfirmButton: false
+        });
       },
       error: (err) => {
         console.error('[BillingAddressComponent] Save error:', err);
-        this.error = err?.error?.message || 'Failed to save billing address.';
-        setTimeout(() => this.error = null, 3000);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: err?.error?.message || 'Failed to save billing address. Please try again.'
+        });
       }
     });
   }
