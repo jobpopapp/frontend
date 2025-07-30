@@ -64,7 +64,8 @@
       }
       
       i {
-        width: 20px;
+        width: 24px; /* Increased icon size */
+        font-size: 20px; /* Added font-size for font-based icons */
         text-align: center;
       }
     }
@@ -80,11 +81,12 @@
       
       .nav-link {
         padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        font-size: 1rem; /* Increased font size */
         margin-left: 1rem;
         
         i {
-          width: 16px;
+          width: 20px; /* Increased icon size */
+          font-size: 18px; /* Added font-size for font-based icons */
         }
       }
     }
@@ -95,12 +97,12 @@
       border: 1px solid currentColor;
       
       .tiny {
-        font-size: 0.7rem;
+        font-size: 0.8rem; /* Increased font size */
       }
     }
     
     .alert {
-      font-size: 0.8rem;
+      font-size: 0.9rem; /* Increased font size */
     }
   }
 }
