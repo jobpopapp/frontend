@@ -14,8 +14,8 @@ export class SubscriptionService {
     return this.http.get<any>(`${this.apiUrl}/plans`);
   }
 
-  initiatePayment(payload: { planType: string; amount: number; currency: string }): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/initiate`, payload);
+  initiatePayment(payload: { planType: string; amount: number; currency: string }): Observable<string> {
+    return this.http.post(`/api/pesapal/submit-order`, payload, { responseType: 'text' });
   }
 
   getSubscriptionStatus(): Observable<SubscriptionStatusString> {

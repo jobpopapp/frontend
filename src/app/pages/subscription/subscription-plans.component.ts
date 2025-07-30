@@ -117,28 +117,17 @@ export class SubscriptionPlansComponent implements OnInit {
     };
 
     this.subscriptionService.initiatePayment(payload).subscribe({
-      next: (response) => {
-        if (response && response.success && response.data && response.data.subscription) {
-          // Subscription activated successfully
-          this.error = null;
-          this.loading[planId] = false;
-          this.isProcessing = false;
-          // Show success message or redirect to dashboard
-          Swal.fire({
-            icon: 'success',
-            title: 'Subscription Activated!',
-            text: 'Subscription activated successfully!',
-            confirmButtonColor: '#3085d6'
-          });
-          this.router.navigate(['/dashboard']);
+      next: (redirectUrl) => {
+        this.loading[planId] = false;
+        this.isProcessing = false;
+        if (redirectUrl) {
+          window.location.href = redirectUrl; // Redirect to Pesapal
         } else {
-          this.error = response?.message || 'Subscription activation failed.';
-          this.loading[planId] = false;
-          this.isProcessing = false;
+          this.error = 'Failed to get Pesapal redirect URL.';
         }
       },
       error: (err) => {
-        this.error = err?.error?.message || 'Failed to activate subscription. Please try again.';
+        this.error = err?.error?.message || 'Failed to initiate payment. Please try again.';
         this.loading[planId] = false;
         this.isProcessing = false;
       }

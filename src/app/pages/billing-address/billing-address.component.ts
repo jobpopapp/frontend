@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-billing-address',
@@ -47,18 +48,25 @@ export class BillingAddressComponent implements OnInit {
 
   saveAddress() {
     this.loading = true;
-    console.log('[BillingAddressComponent] Saving billing address:', this.billingAddress);
-    this.billingService.saveBillingAddress(this.billingAddress).subscribe({
+
+    // Convert country name to 2-letter ISO code if necessary
+    const addressToSend = { ...this.billingAddress };
+    if (addressToSend.country_code && addressToSend.country_code.toLowerCase() === 'uganda') {
+      addressToSend.country_code = 'UG';
+    }
+
+    console.log('[BillingAddressComponent] Saving billing address:', addressToSend);
+    this.billingService.saveBillingAddress(addressToSend).pipe(
+      finalize(() => this.loading = false)
+    ).subscribe({
       next: (updated) => {
         this.billingAddress = updated;
         this.success = true;
-        this.loading = false;
         setTimeout(() => this.success = false, 3000);
       },
       error: (err) => {
         console.error('[BillingAddressComponent] Save error:', err);
         this.error = err?.error?.message || 'Failed to save billing address.';
-        this.loading = false;
         setTimeout(() => this.error = null, 3000);
       }
     });

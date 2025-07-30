@@ -7,7 +7,8 @@ import { JobListComponent } from './pages/jobs/job-list/job-list.component';
 import { JobFormComponent } from './pages/jobs/job-form/job-form.component';
 import { BillingAddressComponent } from './pages/billing-address/billing-address.component';
 // Payment complete page (to be created)
-import { PaymentCompleteComponent } from './pages/payment-complete/payment-complete.component';
+import { PaymentSuccessComponent } from './pages/payment-success/payment-success.component';
+import { PaymentFailureComponent } from './pages/payment-failure/payment-failure.component';
 import { SubscriptionPlansComponent } from './pages/subscription/subscription-plans.component';
 
 export const routes: Routes = [
@@ -24,7 +25,8 @@ export const routes: Routes = [
   { path: 'jobs/edit/:id', component: JobFormComponent },
   { path: 'subscription', component: SubscriptionPlansComponent },
   { path: 'billing-address', component: BillingAddressComponent },
-  { path: 'payment-complete', component: PaymentCompleteComponent },
+  { path: 'payment-success', component: PaymentSuccessComponent },
+  { path: 'payment-failure', component: PaymentFailureComponent },
   
   // Wildcard route - should be last
   { path: '**', redirectTo: '/home' }
