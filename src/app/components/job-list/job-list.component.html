@@ -148,6 +148,9 @@
               <small class="text-muted">
                 Posted {{ getTimeAgo(job.created_at) }}
               </small>
+              <button class="btn btn-sm btn-outline-danger ms-2" (click)="confirmDeleteJob(job.id)">
+                <i class="bi bi-trash"></i>
+              </button>
               <div class="btn-group btn-group-sm">
                 <button class="btn btn-outline-secondary btn-sm" (click)="viewJobDetails(job)">
                   <i class="bi bi-eye"></i>
