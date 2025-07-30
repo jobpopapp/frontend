@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { ApiService } from '../core/services/api.service';
 
 export type SubscriptionStatusString = 'active' | 'expired' | 'none';
 
@@ -8,14 +9,21 @@ export type SubscriptionStatusString = 'active' | 'expired' | 'none';
 export class SubscriptionService {
   private apiUrl = '/api/subscription';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   getPlans(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/plans`);
   }
 
   initiatePayment(payload: { planType: string; amount: number; currency: string }): Observable<string> {
-    return this.http.post(`/api/pesapal/submit-order`, payload, { responseType: 'text' });
+    const token = this.apiService.getToken();
+    if (!token) {
+      throw new Error('Authentication token not found.');
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post(`/api/pesapal/submit-order`, payload, { headers, responseType: 'text' });
   }
 
   getSubscriptionStatus(): Observable<SubscriptionStatusString> {
