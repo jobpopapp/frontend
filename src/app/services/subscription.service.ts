@@ -36,4 +36,8 @@ export class SubscriptionService {
       })
     );
   }
+
+  verifyPayment(orderTrackingId: string) {
+    return this.http.get<any>(`/api/subscription/verify-payment?orderTrackingId=${orderTrackingId}`);
+  }
 }

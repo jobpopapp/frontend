@@ -4,7 +4,7 @@ import { SafeUrlPipe } from '../../pipes/safe-url.pipe';
 import { CommonModule } from '@angular/common';
 import { SubscriptionService, SubscriptionStatusString } from '../../services/subscription.service';
 import { BillingService, BillingAddress } from '../../services/billing.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { PesapalIframeComponent } from '../../components/pesapal-iframe/pesapal-iframe.component';
@@ -50,7 +50,8 @@ export class SubscriptionPlansComponent implements OnInit {
   constructor(
     private subscriptionService: SubscriptionService,
     private billingService: BillingService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute // <-- Added for query params
   ) {}
 
   ngOnInit() {
@@ -80,10 +81,16 @@ export class SubscriptionPlansComponent implements OnInit {
         } else {
           console.warn('[SubscriptionPlansComponent] Unrecognized plans response format:', response);
         }
-        this.plans = plansData.map(plan => ({
-          ...plan,
-          features: Array.isArray(plan.features) ? plan.features : []
-        }));
+        this.plans = plansData.map(plan => {
+          let updatedPlan = { ...plan };
+          if (updatedPlan.id === 'per_job') {
+            updatedPlan.id = 'daily';
+            updatedPlan.name = 'Daily';
+            updatedPlan.description = 'Access all premium features for 24 hours. Perfect for one-off or urgent needs.';
+          }
+          updatedPlan.features = Array.isArray(updatedPlan.features) ? updatedPlan.features : [];
+          return updatedPlan;
+        });
         // Log the final plans array
         console.log('[SubscriptionPlansComponent] Final plans array:', this.plans);
         console.log('[SubscriptionPlansComponent] Plans count:', this.plans.length);
@@ -104,6 +111,22 @@ export class SubscriptionPlansComponent implements OnInit {
       error: (err) => {
         console.error('[SubscriptionPlansComponent] Error fetching subscription status:', err);
         this.subscriptionStatus = null; // Or set a default inactive status
+      }
+    });
+
+    // Handle Pesapal callback (verify payment)
+    this.route.queryParams.subscribe(params => {
+      const orderTrackingId = params['OrderTrackingId'];
+      if (orderTrackingId) {
+        this.subscriptionService.verifyPayment(orderTrackingId).subscribe({
+          next: (result) => {
+            console.log('[SubscriptionPlansComponent] Payment verification result:', result);
+            this.subscriptionStatus = result;
+          },
+          error: (err) => {
+            console.error('[SubscriptionPlansComponent] Error verifying payment:', err);
+          }
+        });
       }
     });
   }
@@ -127,7 +150,7 @@ export class SubscriptionPlansComponent implements OnInit {
     }
 
     const payload = {
-      planType: planId,
+      planType: planId, // always send 'daily', 'monthly', or 'annual'
       amount: selectedPlan.price,
       currency: selectedPlan.currency
     };
