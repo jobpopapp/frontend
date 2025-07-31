@@ -131,7 +131,7 @@ export class SubscriptionPlansComponent implements OnInit {
     });
   }
 
-  subscribe(planId: 'monthly' | 'annual' | 'per_job') {
+  subscribe(planId: 'monthly' | 'annual' | 'daily') {
     if (this.billingMissing) {
       this.router.navigate(['/billing-address']);
       return;
