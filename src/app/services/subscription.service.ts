@@ -15,7 +15,7 @@ export class SubscriptionService {
     return this.http.get<any>(`${this.apiUrl}/plans`);
   }
 
-  initiatePayment(payload: { planType: string; amount: number; currency: string }): Observable<string> {
+  initiatePayment(payload: { planType: string; amount: number; currency: string }): Observable<any> {
     const token = this.apiService.getToken();
     if (!token) {
       throw new Error('Authentication token not found.');
@@ -23,7 +23,7 @@ export class SubscriptionService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.post(`/api/pesapal/submit-order`, payload, { headers, responseType: 'text' });
+    return this.http.post(`/api/pesapal/submit-order`, payload, { headers, responseType: 'json' });
   }
 
   getSubscriptionStatus(): Observable<SubscriptionStatusString> {

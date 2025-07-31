@@ -121,11 +121,12 @@ export class SubscriptionPlansComponent implements OnInit {
     };
 
     this.subscriptionService.initiatePayment(payload).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         console.log('[SubscriptionPlansComponent] Full payment response:', response);
         this.loading[planId] = false;
         this.isProcessing = false;
-        const redirectUrl = (response as any)?.redirect_url;
+        const redirectUrl = response?.redirect_url;
+        console.log('[SubscriptionPlansComponent] Extracted redirectUrl:', redirectUrl);
         if (redirectUrl) {
           console.log('Setting pesapalRedirectUrl to:', redirectUrl);
           this.pesapalRedirectUrl = redirectUrl;
