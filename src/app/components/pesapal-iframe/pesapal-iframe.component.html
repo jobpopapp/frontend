@@ -1,0 +1,15 @@
+<div class="iframe-container">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading Pesapal...</span>
+    </div>
+    <p>Loading Pesapal payment gateway...</p>
+  </div>
+  <iframe
+    *ngIf="safeIframeUrl"
+    [src]="safeIframeUrl"
+    frameborder="0"
+    allowfullscreen
+    (load)="onLoad()"
+  ></iframe>
+</div>

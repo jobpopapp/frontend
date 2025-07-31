@@ -1,14 +1,45 @@
 <div class="dashboard-layout d-flex">
   <!-- Sidebar -->
-  <app-sidebar class="sidebar"></app-sidebar>
+  <app-sidebar></app-sidebar>
 
   <!-- Main Content -->
   <div class="main-content flex-grow-1">
     <!-- Navbar -->
     <app-navbar></app-navbar>
 
+    <!-- Pesapal Iframe -->
+    <div
+      *ngIf="pesapalRedirectUrl"
+      class="d-flex justify-content-center align-items-center"
+      style="min-height: 350px"
+    >
+      <div
+        style="
+          width: 100%;
+          max-width: 400px;
+          aspect-ratio: 4/3;
+          position: relative;
+        "
+      >
+        <iframe
+          [src]="pesapalRedirectUrl | safeUrl"
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          "
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
     <!-- Subscription Content -->
-    <div class="container-fluid p-4">
+    <div class="container-fluid p-4" *ngIf="!pesapalRedirectUrl">
       <h3>Choose a Subscription Plan</h3>
       <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 

@@ -1,5 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
+import { SafeUrlPipe } from '../../pipes/safe-url.pipe';
 
 import { CommonModule } from '@angular/common';
 import { SubscriptionService, SubscriptionStatusString } from '../../services/subscription.service';
@@ -7,6 +8,7 @@ import { BillingService, BillingAddress } from '../../services/billing.service';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
+import { PesapalIframeComponent } from '../../components/pesapal-iframe/pesapal-iframe.component';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 
@@ -15,7 +17,7 @@ import Swal from 'sweetalert2';
   templateUrl: './subscription-plans.component.html',
   styleUrls: ['./subscription-plans.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidebarComponent, NavbarComponent]
+  imports: [CommonModule, SidebarComponent, NavbarComponent, SafeUrlPipe]
 })
 export class SubscriptionPlansComponent implements OnInit {
   asPlanType(id: string): 'monthly' | 'annual' | 'per_job' {
@@ -31,6 +33,7 @@ export class SubscriptionPlansComponent implements OnInit {
   billingAddress: BillingAddress | null = null;
   billingMissing: boolean = false;
   subscriptionStatus: SubscriptionStatusString | null = null;
+  pesapalRedirectUrl: string | null = null;
 
   constructor(
     private subscriptionService: SubscriptionService,
@@ -100,7 +103,8 @@ export class SubscriptionPlansComponent implements OnInit {
     }
 
     this.loading[planId] = true;
-    this.isProcessing = true; // Show the processing modal
+    this.isProcessing = true;
+    this.error = null;
 
     const selectedPlan = this.plans.find(p => p.id === planId);
     if (!selectedPlan) {
@@ -117,19 +121,75 @@ export class SubscriptionPlansComponent implements OnInit {
     };
 
     this.subscriptionService.initiatePayment(payload).subscribe({
-      next: (redirectUrl) => {
+      next: (response) => {
+        console.log('[SubscriptionPlansComponent] Full payment response:', response);
         this.loading[planId] = false;
         this.isProcessing = false;
-        if (redirectUrl) {
-          window.location.href = redirectUrl; // Redirect to Pesapal
+        // Handle string (URL) or object response with type guards
+        const isValidUrl = (url: string | undefined | null) => {
+          return !!url && /^https?:\/\//.test(url);
+        };
+        if (typeof response === 'string') {
+          console.log('Setting pesapalRedirectUrl to:', response);
+          if (isValidUrl(response)) {
+            this.pesapalRedirectUrl = response;
+          } else {
+            console.warn('Received invalid pesapalRedirectUrl:', response);
+            Swal.fire({
+              icon: 'error',
+              title: 'Payment Error',
+              text: 'Invalid payment redirect URL received from server.'
+            });
+          }
+        } else if (response && typeof response === 'object') {
+          const respObj = response as { redirect_url?: string; error?: { message?: string } };
+          if (respObj.redirect_url) {
+            console.log('Setting pesapalRedirectUrl to:', respObj.redirect_url);
+            if (isValidUrl(respObj.redirect_url)) {
+              this.pesapalRedirectUrl = respObj.redirect_url;
+            } else {
+              console.warn('Received invalid pesapalRedirectUrl:', respObj.redirect_url);
+              Swal.fire({
+                icon: 'error',
+                title: 'Payment Error',
+                text: 'Invalid payment redirect URL received from server.'
+              });
+            }
+          } else if (respObj.error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Payment Error',
+              text: respObj.error.message || 'There was an error submitting your payment.'
+            });
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Payment Submitted',
+              text: 'Your payment was submitted successfully.'
+            });
+          }
         } else {
-          this.error = 'Failed to get Pesapal redirect URL.';
+          Swal.fire({
+            icon: 'success',
+            title: 'Payment Submitted',
+            text: 'Your payment was submitted successfully.'
+          });
         }
       },
-      error: (err) => {
-        this.error = err?.error?.message || 'Failed to initiate payment. Please try again.';
+      error: (error) => {
         this.loading[planId] = false;
         this.isProcessing = false;
+        let errorMsg = 'There was an error submitting your payment.';
+        if (error && error.error && error.error.error && error.error.error.message) {
+          errorMsg = error.error.error.message;
+        } else if (error && error.message) {
+          errorMsg = error.message;
+        }
+        Swal.fire({
+          icon: 'error',
+          title: 'Payment Error',
+          text: errorMsg
+        });
       }
     });
   }
