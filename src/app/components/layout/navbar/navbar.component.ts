@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,6 +12,7 @@ import { Company } from '../../../core/interfaces';
 })
 export class NavbarComponent implements OnInit {
   @Output() sidebarToggle = new EventEmitter<void>();
+  @Input() isAdminDashboard: boolean = false; // New input property
   
   currentCompany: Company | null = null;
   pageTitle = 'Dashboard';
@@ -62,14 +63,24 @@ export class NavbarComponent implements OnInit {
   private updatePageTitle(): void {
     const url = this.router.url;
     
-    if (url.includes('/dashboard')) {
-      this.pageTitle = 'Dashboard';
-    } else if (url.includes('/jobs')) {
-      this.pageTitle = 'Job Management';
-    } else if (url.includes('/subscription')) {
-      this.pageTitle = 'Subscription';
+    if (this.isAdminDashboard) {
+      if (url.includes('/admin/dashboard')) {
+        this.pageTitle = 'Admin Dashboard';
+      } else if (url.includes('/admin/companies')) {
+        this.pageTitle = 'Company Management';
+      } else {
+        this.pageTitle = 'JobPop Admin Portal';
+      }
     } else {
-      this.pageTitle = 'JobPop Company Portal';
+      if (url.includes('/dashboard')) {
+        this.pageTitle = 'Dashboard';
+      } else if (url.includes('/jobs')) {
+        this.pageTitle = 'Job Management';
+      } else if (url.includes('/subscription')) {
+        this.pageTitle = 'Subscription';
+      } else {
+        this.pageTitle = 'JobPop Company Portal';
+      }
     }
   }
 }

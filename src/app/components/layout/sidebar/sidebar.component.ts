@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 })
 export class SidebarComponent implements OnInit {
   @Output() navigationChange = new EventEmitter<string>();
+  @Input() isAdminDashboard: boolean = false; // New input property
   
   currentCompany: Company | null = null;
   isJobsMenuOpen = false;
@@ -37,8 +38,10 @@ export class SidebarComponent implements OnInit {
       this.isVerified = company?.is_verified || false;
     });
 
-    // Load subscription status
-    this.loadSubscriptionStatus();
+    // Load subscription status only for non-admin dashboard
+    if (!this.isAdminDashboard) {
+      this.loadSubscriptionStatus();
+    }
   }
 
   toggleJobsMenu(event: Event): void {
@@ -158,6 +161,7 @@ export class SidebarComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']); // Redirect to login page after logout
   }
 
   getSubscriptionStatusClass(): string {
@@ -238,7 +242,7 @@ export class SidebarComponent implements OnInit {
   }
 
   navigateToSubscription(): void {
-    this.navigateTo('subscription');
+    this.router.navigate(['/subscription']);
   }
 
   navigateToProfile(): void {

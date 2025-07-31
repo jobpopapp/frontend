@@ -279,12 +279,18 @@ export class JobFormComponent implements OnInit {
         this.isLoading = false;
         
         // Show user-friendly error message
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Failed to save job. Please check all required fields and try again.',
-          confirmButtonColor: '#3085d6'
-        });
+      Swal.fire({
+  icon: 'error',
+  title: 'Error!',
+  html: `
+    <p style="color: #d33;">Please address the following issues:</p>
+    <ul style="color: #555; text-align: left;">
+      <li><span style="color: #c0392b;">1. Ensure you have an active subscription.</span></li>
+      <li><span style="color: #c0392b;">2. Fill in all required fields before saving the job.</span></li>
+    </ul>
+  `,
+  confirmButtonColor: '#3085d6'
+});
       }
     });
   }

@@ -7,7 +7,7 @@
       </div>
       <div>
         <h4 class="mb-0 fw-bold text-light">JobPop</h4>
-        <small class="text-accent">Company Portal</small>
+        <small class="text-accent">{{ isAdminDashboard ? 'Admin Portal' : 'Company Portal' }}</small>
       </div>
     </div>
   </div>
@@ -15,82 +15,184 @@
   <!-- Navigation Menu -->
   <nav class="sidebar-nav p-3">
     <ul class="nav flex-column">
-      <!-- Dashboard -->
-      <li class="nav-item mb-1">
-        <a
-          routerLink="/dashboard"
-          class="nav-link d-flex align-items-center text-light"
-        >
-          <i class="bi bi-speedometer2 me-3"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
-
-      <!-- Jobs Management -->
-      <li class="nav-item mb-1">
-        <a
-          href="#"
-          class="nav-link d-flex align-items-center text-light"
-          [class.active]="isJobsMenuOpen"
-          (click)="toggleJobsMenu($event)"
-        >
-          <i class="bi bi-briefcase me-3"></i>
-          <span class="flex-grow-1">Jobs</span>
-          <i
-            class="bi text-accent"
-            [class.bi-chevron-down]="!isJobsMenuOpen"
-            [class.bi-chevron-up]="isJobsMenuOpen"
-          ></i>
-        </a>
-
-        <!-- Jobs Submenu -->
-        <div class="submenu" [class.show]="isJobsMenuOpen">
-          <ul class="nav flex-column ms-4">
-            <li class="nav-item">
-              <a
-                href="#"
-                class="nav-link"
-                (click)="navigateToJobs(); $event.preventDefault()"
-              >
-                <i class="bi bi-list me-2"></i>
-                All Jobs
-              </a>
-            </li>
-            <li class="nav-item">
-              <a
-                href="#"
-                class="nav-link"
-                (click)="navigateToJobForm(); $event.preventDefault()"
-              >
-                <i class="bi bi-plus-circle me-2"></i>
-                Post New Job
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li>
-
-      <!-- Subscription -->
-      <li class="nav-item mb-1">
-        <a
-          routerLink="/subscription"
-          class="nav-link d-flex align-items-center"
-        >
-          <i class="bi bi-credit-card me-3"></i>
-          <span>Subscription</span>
-          <span
-            *ngIf="subscriptionStatus === 'expired'"
-            class="badge bg-warning ms-auto"
-            >Expired</span
+      <!-- Company Dashboard Items -->
+      <ng-container *ngIf="!isAdminDashboard">
+        <!-- Dashboard -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/dashboard"
+            class="nav-link d-flex align-items-center text-light"
           >
-          <span
-            *ngIf="subscriptionStatus === 'active' && daysLeft <= 7"
-            class="badge bg-warning ms-auto"
-            >{{ daysLeft }}d</span
-          >
-        </a>
-      </li>
+            <i class="bi bi-speedometer2 me-3"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
 
+        <!-- Jobs Management -->
+        <li class="nav-item mb-1">
+          <a
+            href="#"
+            class="nav-link d-flex align-items-center text-light"
+            [class.active]="isJobsMenuOpen"
+            (click)="toggleJobsMenu($event)"
+          >
+            <i class="bi bi-briefcase me-3"></i>
+            <span class="flex-grow-1">Jobs</span>
+            <i
+              class="bi text-accent"
+              [class.bi-chevron-down]="!isJobsMenuOpen"
+              [class.bi-chevron-up]="isJobsMenuOpen"
+            ></i>
+          </a>
+
+          <!-- Jobs Submenu -->
+          <div class="submenu" [class.show]="isJobsMenuOpen">
+            <ul class="nav flex-column ms-4">
+              <li class="nav-item">
+                <a
+                  href="#"
+                  class="nav-link"
+                  (click)="navigateToJobs(); $event.preventDefault()"
+                >
+                  <i class="bi bi-list me-2"></i>
+                  All Jobs
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  href="#"
+                  class="nav-link"
+                  (click)="navigateToJobForm(); $event.preventDefault()"
+                >
+                  <i class="bi bi-plus-circle me-2"></i>
+                  Post New Job
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Subscription -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/subscription"
+            class="nav-link d-flex align-items-center"
+          >
+            <i class="bi bi-credit-card me-3"></i>
+            <span>Subscription</span>
+            <span
+              *ngIf="subscriptionStatus === 'expired'"
+              class="badge bg-warning ms-auto"
+              >Expired</span
+            >
+            <span
+              *ngIf="subscriptionStatus === 'active' && daysLeft <= 7"
+              class="badge bg-warning ms-auto"
+              >{{ daysLeft }}d</span
+            >
+          </a>
+        </li>
+
+        <!-- Refresh Subscription -->
+        <li class="nav-item mb-1">
+          <a
+            href="#"
+            class="nav-link d-flex align-items-center"
+            (click)="$event.preventDefault(); refreshSubscription()"
+          >
+            <i class="bi bi-arrow-clockwise me-3"></i>
+            <span>Refresh Subscription</span>
+          </a>
+        </li>
+
+        <!-- Company Profile -->
+        <li class="nav-item mb-1">
+          <a
+            href="#"
+            class="nav-link d-flex align-items-center"
+            (click)="$event.preventDefault(); viewProfile()"
+          >
+            <i class="bi bi-building me-3"></i>
+            <span>Company Profile</span>
+            <i
+              *ngIf="!isVerified"
+              class="bi bi-exclamation-triangle text-warning ms-auto"
+              title="Verification Required"
+            ></i>
+          </a>
+        </li>
+
+        <!-- Billing Address -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/billing-address"
+            class="nav-link d-flex align-items-center"
+          >
+            <i class="bi bi-wallet2 me-3"></i>
+            <span>Billing Address</span>
+          </a>
+        </li>
+      </ng-container>
+
+      <!-- Admin Dashboard Items -->
+      <ng-container *ngIf="isAdminDashboard">
+        <!-- Admin Dashboard Link -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/admin/dashboard"
+            class="nav-link d-flex align-items-center text-light"
+          >
+            <i class="bi bi-speedometer2 me-3"></i>
+            <span>Admin Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Company Management -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/admin/companies"
+            class="nav-link d-flex align-items-center text-light"
+          >
+            <i class="bi bi-building me-3"></i>
+            <span>Company Management</span>
+          </a>
+        </li>
+
+        <!-- Job & Category Management -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/admin/jobs-categories"
+            class="nav-link d-flex align-items-center text-light"
+          >
+            <i class="bi bi-briefcase me-3"></i>
+            <span>Job & Category Management</span>
+          </a>
+        </li>
+
+        <!-- Subscription & Plan Management -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/admin/subscriptions-plans"
+            class="nav-link d-flex align-items-center text-light"
+          >
+            <i class="bi bi-credit-card me-3"></i>
+            <span>Subscription & Plan Management</span>
+          </a>
+        </li>
+
+        <!-- System Administration -->
+        <li class="nav-item mb-1">
+          <a
+            routerLink="/admin/system-admin"
+            class="nav-link d-flex align-items-center text-light"
+          >
+            <i class="bi bi-gear me-3"></i>
+            <span>System Administration</span>
+          </a>
+        </li>
+      </ng-container>
+
+      <!-- Common Items (if any) -->
       <!-- Applications (Future Feature) -->
       <li class="nav-item mb-1 d-none">
         <a
@@ -120,46 +222,6 @@
       <!-- Divider -->
       <li><hr class="my-3" /></li>
 
-      <!-- Company Profile -->
-      <li class="nav-item mb-1">
-        <a
-          href="#"
-          class="nav-link d-flex align-items-center"
-          (click)="$event.preventDefault(); viewProfile()"
-        >
-          <i class="bi bi-building me-3"></i>
-          <span>Company Profile</span>
-          <i
-            *ngIf="!isVerified"
-            class="bi bi-exclamation-triangle text-warning ms-auto"
-            title="Verification Required"
-          ></i>
-        </a>
-      </li>
-
-      <!-- Billing Address -->
-      <li class="nav-item mb-1">
-        <a
-          routerLink="/billing-address"
-          class="nav-link d-flex align-items-center"
-        >
-          <i class="bi bi-wallet2 me-3"></i>
-          <span>Billing Address</span>
-        </a>
-      </li>
-
-      <!-- Refresh Subscription -->
-      <li class="nav-item mb-1">
-        <a
-          href="#"
-          class="nav-link d-flex align-items-center"
-          (click)="$event.preventDefault(); refreshSubscription()"
-        >
-          <i class="bi bi-arrow-clockwise me-3"></i>
-          <span>Refresh Subscription</span>
-        </a>
-      </li>
-
       <!-- Settings -->
       <li class="nav-item mb-1 d-none">
         <a
@@ -188,29 +250,32 @@
 
   <!-- Footer -->
   <div class="sidebar-footer p-3 mt-auto border-top">
-    <!-- Verification Status -->
-    <div *ngIf="!isVerified" class="alert alert-warning py-2 px-3 small mb-2">
-      <i class="bi bi-shield-exclamation me-2"></i>
-      <strong>Verification Required</strong>
-      <br />
-      <small>Upload certificate to verify your company</small>
-    </div>
+    <!-- Conditional Footer Content -->
+    <ng-container *ngIf="!isAdminDashboard">
+      <!-- Verification Status -->
+      <div *ngIf="!isVerified" class="alert alert-warning py-2 px-3 small mb-2">
+        <i class="bi bi-shield-exclamation me-2"></i>
+        <strong>Verification Required</strong>
+        <br />
+        <small>Upload certificate to verify your company</small>
+      </div>
 
-    <!-- Subscription Status -->
-    <div
-      class="subscription-status p-2 rounded"
-      [ngClass]="getSubscriptionStatusClass()"
-    >
-      <div class="d-flex align-items-center">
-        <i class="bi" [ngClass]="getSubscriptionIcon()"></i>
-        <div class="ms-2 flex-grow-1">
-          <div class="small fw-semibold">{{ getSubscriptionText() }}</div>
-          <div *ngIf="subscriptionStatus === 'active'" class="tiny text-muted">
-            {{ daysLeft }} days left
+      <!-- Subscription Status -->
+      <div
+        class="subscription-status p-2 rounded"
+        [ngClass]="getSubscriptionStatusClass()"
+      >
+        <div class="d-flex align-items-center">
+          <i class="bi" [ngClass]="getSubscriptionIcon()"></i>
+          <div class="ms-2 flex-grow-1">
+            <div class="small fw-semibold">{{ getSubscriptionText() }}</div>
+            <div *ngIf="subscriptionStatus === 'active'" class="tiny text-muted">
+              {{ daysLeft }} days left
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
 
     <!-- Logout Button -->
     <button class="btn btn-outline-danger btn-sm w-100 mt-2" (click)="logout()">

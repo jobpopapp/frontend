@@ -9,6 +9,8 @@ import { BillingAddressComponent } from './pages/billing-address/billing-address
 // Payment complete page (to be created)
 import { PaymentResultComponent } from './pages/subscription/payment-result/payment-result.component';
 import { SubscriptionPlansComponent } from './pages/subscription/subscription-plans.component';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
+import { AdminCompaniesComponent } from './pages/admin-dashboard/admin-companies/admin-companies.component';
 
 export const routes: Routes = [
   // Public routes
@@ -19,6 +21,18 @@ export const routes: Routes = [
   
   // Protected routes (will add auth guard later)
   { path: 'dashboard', component: DashboardComponent },
+  { 
+    path: 'admin/dashboard', 
+    component: AdminDashboardComponent, 
+    children: [
+      { path: '', redirectTo: 'companies', pathMatch: 'full' },
+      { path: 'companies', component: AdminCompaniesComponent },
+      // Placeholder for other admin routes
+      { path: 'jobs-categories', component: AdminCompaniesComponent }, // Placeholder
+      { path: 'subscriptions-plans', component: AdminCompaniesComponent }, // Placeholder
+      { path: 'system-admin', component: AdminCompaniesComponent }, // Placeholder
+    ]
+  },
   { path: 'jobs', component: JobListComponent },
   { path: 'jobs/new', component: JobFormComponent },
   { path: 'jobs/edit/:id', component: JobFormComponent },

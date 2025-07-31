@@ -44,7 +44,7 @@
         </ul>
       </div>
 
-      <!-- Company Profile Dropdown -->
+      <!-- User/Company Profile Dropdown -->
       <div class="dropdown">
         <button
           class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center"
@@ -52,23 +52,41 @@
           data-bs-toggle="dropdown"
         >
           <div class="company-avatar me-2">
-            {{ getCompanyInitials() }}
+            <ng-container *ngIf="!isAdminDashboard">
+              {{ getCompanyInitials() }}
+            </ng-container>
+            <ng-container *ngIf="isAdminDashboard"> AD </ng-container>
           </div>
-          <span class="d-none d-md-inline">{{
-            currentCompany?.name || "Company"
-          }}</span>
+          <span class="d-none d-md-inline">
+            <ng-container *ngIf="!isAdminDashboard">
+              {{ currentCompany?.name || "Company" }}
+            </ng-container>
+            <ng-container *ngIf="isAdminDashboard"> Admin </ng-container>
+          </span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <h6 class="dropdown-header">{{ currentCompany?.name }}</h6>
+            <h6 class="dropdown-header">
+              <ng-container *ngIf="!isAdminDashboard">
+                {{ currentCompany?.name }}
+              </ng-container>
+              <ng-container *ngIf="isAdminDashboard">
+                Administrator
+              </ng-container>
+            </h6>
           </li>
           <li>
-            <span class="dropdown-item-text small text-muted">{{
-              currentCompany?.email
-            }}</span>
+            <span class="dropdown-item-text small text-muted">
+              <ng-container *ngIf="!isAdminDashboard">
+                {{ currentCompany?.email }}
+              </ng-container>
+              <ng-container *ngIf="isAdminDashboard">
+                admin&#64;jobpop.app
+              </ng-container>
+            </span>
           </li>
           <li><hr class="dropdown-divider" /></li>
-          <li>
+          <li *ngIf="!isAdminDashboard">
             <a
               class="dropdown-item"
               href="#"
@@ -77,7 +95,7 @@
               <i class="bi bi-person me-2"></i>Company Profile
             </a>
           </li>
-          <li>
+          <li *ngIf="!isAdminDashboard">
             <a
               class="dropdown-item"
               href="#"

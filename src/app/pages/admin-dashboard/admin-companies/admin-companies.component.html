@@ -1,0 +1,61 @@
+<div class="container-fluid mt-4">
+  <h2>Company Management</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Loading companies...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngIf="companies.length === 0" class="alert alert-info" role="alert">
+      No companies found.
+    </div>
+
+    <div *ngIf="companies.length > 0" class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+            <th>Country</th>
+            <th>Verification Status</th>
+            <th>Certificate</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of companies">
+            <td>{{ company.name }}</td>
+            <td>{{ company.email }}</td>
+            <td>{{ company.phone }}</td>
+            <td>{{ company.country }}</td>
+            <td>
+              <span class="badge" [ngClass]="{'bg-success': company.is_verified, 'bg-warning': !company.is_verified}">
+                {{ company.is_verified ? 'Verified' : 'Not Verified' }}
+              </span>
+            </td>
+            <td>
+              <a *ngIf="company.certificate_url" [href]="company.certificate_url" target="_blank" class="btn btn-sm btn-outline-primary">
+                View Certificate
+              </a>
+              <span *ngIf="!company.certificate_url">N/A</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info me-2" (click)="editCompany(company)">Edit</button>
+              <button class="btn btn-sm" [ngClass]="{'btn-warning': company.is_verified, 'btn-success': !company.is_verified}" (click)="verifyCompany(company)">
+                {{ company.is_verified ? 'Unverify' : 'Verify' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

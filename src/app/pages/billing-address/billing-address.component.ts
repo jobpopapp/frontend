@@ -75,10 +75,16 @@ export class BillingAddressComponent implements OnInit {
     this.loading = true;
     console.log('[BillingAddressComponent] saveAddress - After setting loading to true:', this.loading);
 
-    // Convert country name to 2-letter ISO code if necessary
     const addressToSend = { ...this.billingAddress };
-    if (addressToSend.country_code && addressToSend.country_code.toLowerCase() === 'uganda') {
-      addressToSend.country_code = 'UG';
+
+    // Validate country_code format
+    if (addressToSend.country_code && addressToSend.country_code.length !== 2) {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.success = false;
+        this.error = 'Country Code must be a 2-letter ISO code (e.g., US, UG).';
+      });
+      return;
     }
 
     console.log('[BillingAddressComponent] Saving billing address:', addressToSend);
@@ -88,7 +94,15 @@ export class BillingAddressComponent implements OnInit {
           this.loading = false;
           this.success = true;
           this.error = null;
-          this.billingAddress = this.getDefaultBillingAddress();
+          // Do not reset the form on success, allow user to see saved data
+          // this.billingAddress = this.getDefaultBillingAddress();
+          Swal.fire({
+            icon: 'success',
+            title: 'Address Saved!',
+            text: 'Your billing address has been successfully saved.',
+            showConfirmButton: false,
+            timer: 1500
+          });
         });
       },
       error: (err: any) => {
@@ -97,6 +111,11 @@ export class BillingAddressComponent implements OnInit {
           this.success = false;
           this.error = err?.error?.message || 'Failed to save billing address.';
           if (!this.billingAddress) this.billingAddress = this.getDefaultBillingAddress();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: this.error ?? '',
+          });
         });
       }
     });

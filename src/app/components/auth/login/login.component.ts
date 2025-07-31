@@ -55,7 +55,12 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.router.navigate(['/dashboard']);
+            const userEmail = this.loginForm.value.email.toLowerCase();
+            if (userEmail === 'jobpopapp@gmail.com' || userEmail === 'admin@jobpop.app') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
           } else {
             this.errorMessage = response.message || 'Login failed. Please try again.';
           }
