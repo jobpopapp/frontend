@@ -105,9 +105,7 @@
                   >{{ feature }}
                 </li>
               </ul>
-              <div class="price mb-2">
-                {{ plan.currency || "UGX" }} {{ plan.price }}
-              </div>
+              <div class="price mb-2">UGX {{ plan.price }}</div>
               <button
                 class="btn btn-primary w-100"
                 (click)="subscribe(asPlanType(plan.id))"

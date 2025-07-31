@@ -125,54 +125,15 @@ export class SubscriptionPlansComponent implements OnInit {
         console.log('[SubscriptionPlansComponent] Full payment response:', response);
         this.loading[planId] = false;
         this.isProcessing = false;
-        // Handle string (URL) or object response with type guards
-        const isValidUrl = (url: string | undefined | null) => {
-          return !!url && /^https?:\/\//.test(url);
-        };
-        if (typeof response === 'string') {
-          console.log('Setting pesapalRedirectUrl to:', response);
-          if (isValidUrl(response)) {
-            this.pesapalRedirectUrl = response;
-          } else {
-            console.warn('Received invalid pesapalRedirectUrl:', response);
-            Swal.fire({
-              icon: 'error',
-              title: 'Payment Error',
-              text: 'Invalid payment redirect URL received from server.'
-            });
-          }
-        } else if (response && typeof response === 'object') {
-          const respObj = response as { redirect_url?: string; error?: { message?: string } };
-          if (respObj.redirect_url) {
-            console.log('Setting pesapalRedirectUrl to:', respObj.redirect_url);
-            if (isValidUrl(respObj.redirect_url)) {
-              this.pesapalRedirectUrl = respObj.redirect_url;
-            } else {
-              console.warn('Received invalid pesapalRedirectUrl:', respObj.redirect_url);
-              Swal.fire({
-                icon: 'error',
-                title: 'Payment Error',
-                text: 'Invalid payment redirect URL received from server.'
-              });
-            }
-          } else if (respObj.error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Payment Error',
-              text: respObj.error.message || 'There was an error submitting your payment.'
-            });
-          } else {
-            Swal.fire({
-              icon: 'success',
-              title: 'Payment Submitted',
-              text: 'Your payment was submitted successfully.'
-            });
-          }
+        const redirectUrl = (response as any)?.redirect_url;
+        if (redirectUrl) {
+          console.log('Setting pesapalRedirectUrl to:', redirectUrl);
+          this.pesapalRedirectUrl = redirectUrl;
         } else {
           Swal.fire({
-            icon: 'success',
-            title: 'Payment Submitted',
-            text: 'Your payment was submitted successfully.'
+            icon: 'error',
+            title: 'Payment Error',
+            text: 'No payment redirect URL received from server.'
           });
         }
       },
