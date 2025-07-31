@@ -40,4 +40,15 @@ export class SubscriptionService {
   verifyPayment(orderTrackingId: string) {
     return this.http.get<any>(`/api/subscription/verify-payment?orderTrackingId=${orderTrackingId}`);
   }
+
+  refreshSubscription(companyId: string): Observable<any> {
+    const token = this.apiService.getToken();
+    if (!token) {
+      throw new Error('Authentication token not found.');
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any>(`${this.apiUrl}/refresh`, { company_id: companyId }, { headers });
+  }
 }

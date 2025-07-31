@@ -138,4 +138,8 @@ export class SubscriptionService {
       })
     );
   }
+
+  refreshSubscription(companyId: string): Observable<any> {
+    return this.apiService.post<any>('/subscription/refresh', { company_id: companyId });
+  }
 }

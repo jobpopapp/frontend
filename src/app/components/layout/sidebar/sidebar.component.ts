@@ -248,4 +248,38 @@ export class SidebarComponent implements OnInit {
   navigateToVerification(): void {
     this.navigateTo('verification');
   }
+
+  refreshSubscription(): void {
+    if (this.currentCompany) {
+      Swal.fire({
+        title: 'Refreshing...',
+        text: 'Please wait while we update your subscription status.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      this.subscriptionService.refreshSubscription(this.currentCompany.id).subscribe({
+        next: (result: any) => {
+          this.loadSubscriptionStatus();
+          Swal.close();
+          Swal.fire({
+            icon: 'success',
+            title: 'Subscription status refreshed',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        },
+        error: (err: any) => {
+          Swal.close();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error refreshing subscription',
+            text: err.error.error,
+          });
+        }
+      });
+    }
+  }
 }
