@@ -37,23 +37,55 @@
       <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
       <!-- Subscription Status Display -->
-      <div *ngIf="subscriptionStatus" class="card mb-4 p-3">
-        <h4>Your Current Subscription</h4>
-        <p>
-          Status:
-          <span
-            [class.text-success]="subscriptionStatus === 'active'"
-            [class.text-danger]="subscriptionStatus !== 'active'"
+      <div *ngIf="subscriptionStatus">
+        <ng-container *ngIf="isStatusObject(); else statusStringBlock">
+          <div
+            *ngIf="getStatusField('is_active')"
+            class="card mb-4 p-3 border-success"
           >
-            {{ subscriptionStatus === "active" ? "Active" : "Inactive" }}
-          </span>
-        </p>
-        <div
-          *ngIf="subscriptionStatus === 'none'"
-          class="alert alert-info mt-2"
-        >
-          No Active Plan
-        </div>
+            <h4 class="mb-2 text-success">Your Subscription is Active</h4>
+            <div *ngIf="getStatusField('plan_type')">
+              <p>
+                <strong>Plan:</strong>
+                {{ getStatusField("plan_type") | titlecase }}
+              </p>
+            </div>
+            <div *ngIf="getStatusField('start_date')">
+              <p>
+                <strong>Start Date:</strong>
+                {{ getStatusField("start_date") | date : "mediumDate" }}
+              </p>
+            </div>
+            <div *ngIf="getStatusField('end_date')">
+              <p>
+                <strong>End Date:</strong>
+                {{ getStatusField("end_date") | date : "mediumDate" }}
+              </p>
+            </div>
+          </div>
+          <div
+            *ngIf="!getStatusField('is_active')"
+            class="alert alert-warning mb-4"
+          >
+            <strong>No active subscription.</strong> Please subscribe to access
+            premium features.
+          </div>
+        </ng-container>
+        <ng-template #statusStringBlock>
+          <div
+            *ngIf="subscriptionStatus === 'active'"
+            class="card mb-4 p-3 border-success"
+          >
+            <h4 class="mb-2 text-success">Your Subscription is Active</h4>
+          </div>
+          <div
+            *ngIf="subscriptionStatus !== 'active'"
+            class="alert alert-warning mb-4"
+          >
+            <strong>No active subscription.</strong> Please subscribe to access
+            premium features.
+          </div>
+        </ng-template>
       </div>
 
       <!-- Show message if no plans -->
@@ -101,7 +133,7 @@
               <div class="price mb-2">UGX {{ plan.price }}</div>
               <button
                 class="btn btn-primary w-100"
-                (click)="subscribe(asPlanType(plan.id))"
+                (click)="subscribe(isPlanType(plan.id))"
                 [disabled]="loading[plan.id]"
               >
                 <span

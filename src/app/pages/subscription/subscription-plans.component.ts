@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { SafeUrlPipe } from '../../pipes/safe-url.pipe';
 
@@ -20,11 +19,24 @@ import Swal from 'sweetalert2';
   imports: [CommonModule, SidebarComponent, NavbarComponent, SafeUrlPipe]
 })
 export class SubscriptionPlansComponent implements OnInit {
-  asPlanType(id: string): 'monthly' | 'annual' | 'per_job' {
+
+  isPlanType(id: string): 'monthly' | 'annual' | 'per_job' {
     if (id === 'monthly' || id === 'annual' || id === 'per_job') {
       return id as 'monthly' | 'annual' | 'per_job';
     }
     return 'monthly'; // fallback
+  }
+
+  isStatusObject(): boolean {
+    return !!(
+      this.subscriptionStatus &&
+      typeof this.subscriptionStatus === 'object' &&
+      'is_active' in this.subscriptionStatus
+    );
+  }
+
+  getStatusField(field: string): any {
+    return this.isStatusObject() ? (this.subscriptionStatus as any)[field] : undefined;
   }
   plans: any[] = [];
   loading: { [key: string]: boolean } = {};
