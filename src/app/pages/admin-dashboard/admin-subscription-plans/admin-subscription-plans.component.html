@@ -1,0 +1,171 @@
+<div class="container-fluid mt-4">
+  <h2>Subscription Plan Management</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Loading plans...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <!-- Plans List -->
+    <div class="card p-4 shadow-sm">
+      <h3>Existing Plans</h3>
+      <div *ngIf="plans.length === 0" class="alert alert-info" role="alert">
+        No subscription plans found.
+      </div>
+
+      <div *ngIf="plans.length > 0" class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Currency</th>
+              <th>Duration (Days)</th>
+              <th>Popular</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let plan of plans">
+              <td>{{ plan.name }}</td>
+              <td>{{ plan.price }}</td>
+              <td>{{ plan.currency }}</td>
+              <td>{{ plan.duration_days || "N/A" }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': plan.popular,
+                    'bg-secondary': !plan.popular
+                  }"
+                >
+                  {{ plan.popular ? "Yes" : "No" }}
+                </span>
+              </td>
+              <td>
+                <button
+                  class="btn btn-sm btn-info me-2"
+                  (click)="editPlan(plan)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="deletePlan(plan.id)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Create/Edit Plan Form -->
+    <div class="card p-4 shadow-sm mb-4">
+      <h3>{{ editingPlan ? "Edit Plan" : "Create New Plan" }}</h3>
+      <form (ngSubmit)="editingPlan ? updatePlan() : createPlan()">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              [(ngModel)]="currentFormPlan.name"
+              name="name"
+              required
+            />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input
+              type="number"
+              class="form-control"
+              id="price"
+              [(ngModel)]="currentFormPlan.price"
+              name="price"
+              required
+            />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="currency" class="form-label">Currency</label>
+            <input
+              type="text"
+              class="form-control"
+              id="currency"
+              [(ngModel)]="currentFormPlan.currency"
+              name="currency"
+              required
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              [(ngModel)]="currentFormPlan.description"
+              name="description"
+            ></textarea>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="duration_days" class="form-label"
+              >Duration (Days)</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="duration_days"
+              [(ngModel)]="currentFormPlan.duration_days"
+              name="duration_days"
+            />
+          </div>
+          <div class="col-md-3 mb-3 form-check d-flex align-items-end">
+            <div>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="popular"
+                [(ngModel)]="currentFormPlan.popular"
+                name="popular"
+              />
+              <label class="form-check-label" for="popular">Is Popular</label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="features" class="form-label"
+            >Features (comma separated)</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="features"
+            [(ngModel)]="featuresString"
+            name="features"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary me-2">
+          {{ editingPlan ? "Update Plan" : "Create Plan" }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          *ngIf="editingPlan"
+          (click)="cancelEdit()"
+        >
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

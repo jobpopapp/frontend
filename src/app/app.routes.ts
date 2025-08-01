@@ -11,6 +11,9 @@ import { PaymentResultComponent } from './pages/subscription/payment-result/paym
 import { SubscriptionPlansComponent } from './pages/subscription/subscription-plans.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { AdminCompaniesComponent } from './pages/admin-dashboard/admin-companies/admin-companies.component';
+import { AdminAnalyticsComponent } from './pages/admin-dashboard/admin-analytics/admin-analytics.component';
+import { AdminSubscriptionPlansComponent } from './pages/admin-dashboard/admin-subscription-plans/admin-subscription-plans.component';
+import { AdminSubscriptionsComponent } from './pages/admin-dashboard/admin-subscriptions/admin-subscriptions.component';
 
 export const routes: Routes = [
   // Public routes
@@ -25,11 +28,13 @@ export const routes: Routes = [
     path: 'admin/dashboard', 
     component: AdminDashboardComponent, 
     children: [
-      { path: '', redirectTo: 'companies', pathMatch: 'full' },
+      { path: '', redirectTo: 'analytics', pathMatch: 'full' },
+      { path: 'analytics', component: AdminAnalyticsComponent },
       { path: 'companies', component: AdminCompaniesComponent },
+      { path: 'subscriptions-plans', component: AdminSubscriptionPlansComponent },
+      { path: 'subscriptions', component: AdminSubscriptionsComponent },
       // Placeholder for other admin routes
       { path: 'jobs-categories', component: AdminCompaniesComponent }, // Placeholder
-      { path: 'subscriptions-plans', component: AdminCompaniesComponent }, // Placeholder
       { path: 'system-admin', component: AdminCompaniesComponent }, // Placeholder
     ]
   },

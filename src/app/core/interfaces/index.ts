@@ -115,6 +115,7 @@ export interface SubscriptionPlan {
   duration_days?: number;
   features: string[];
   popular?: boolean;
+  is_popular?: boolean; // Added to match backend
 }
 
 export interface PaymentRequest {

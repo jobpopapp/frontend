@@ -1,0 +1,51 @@
+<div class="container-fluid mt-4">
+  <h2>Analytics Overview</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Loading analytics...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card text-center p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Total Companies</h5>
+          <p class="card-text display-4 text-primary">{{ analytics.totalCompanies }}</p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0">
+          <small class="text-muted">All registered user profiles</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card text-center p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
+        <div class="card-body">
+          <h5 class="card-title text-success">Active Subscribers</h5>
+          <p class="card-text display-4 text-success">{{ analytics.activeSubscribers }}</p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0">
+          <small class="text-muted">Companies with active subscriptions</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card text-center p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Inactive Subscribers</h5>
+          <p class="card-text display-4 text-danger">{{ analytics.inactiveSubscribers }}</p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0">
+          <small class="text-muted">Companies with expired or no subscriptions</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
