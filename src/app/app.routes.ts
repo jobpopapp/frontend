@@ -14,6 +14,7 @@ import { AdminCompaniesComponent } from './pages/admin-dashboard/admin-companies
 import { AdminAnalyticsComponent } from './pages/admin-dashboard/admin-analytics/admin-analytics.component';
 import { AdminSubscriptionPlansComponent } from './pages/admin-dashboard/admin-subscription-plans/admin-subscription-plans.component';
 import { AdminSubscriptionsComponent } from './pages/admin-dashboard/admin-subscriptions/admin-subscriptions.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   // Public routes
@@ -22,11 +23,12 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   
-  // Protected routes (will add auth guard later)
-  { path: 'dashboard', component: DashboardComponent },
+  // Protected routes
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { 
     path: 'admin/dashboard', 
     component: AdminDashboardComponent, 
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'analytics', pathMatch: 'full' },
       { path: 'analytics', component: AdminAnalyticsComponent },
@@ -38,12 +40,12 @@ export const routes: Routes = [
       { path: 'system-admin', component: AdminCompaniesComponent }, // Placeholder
     ]
   },
-  { path: 'jobs', component: JobListComponent },
-  { path: 'jobs/new', component: JobFormComponent },
-  { path: 'jobs/edit/:id', component: JobFormComponent },
-  { path: 'subscription', component: SubscriptionPlansComponent },
-  { path: 'billing-address', component: BillingAddressComponent },
-  { path: 'subscription/payment-result', component: PaymentResultComponent },
+  { path: 'jobs', component: JobListComponent, canActivate: [AuthGuard] },
+  { path: 'jobs/new', component: JobFormComponent, canActivate: [AuthGuard] },
+  { path: 'jobs/edit/:id', component: JobFormComponent, canActivate: [AuthGuard] },
+  { path: 'subscription', component: SubscriptionPlansComponent, canActivate: [AuthGuard] },
+  { path: 'billing-address', component: BillingAddressComponent, canActivate: [AuthGuard] },
+  { path: 'subscription/payment-result', component: PaymentResultComponent, canActivate: [AuthGuard] },
   
   // Wildcard route - should be last
   { path: '**', redirectTo: '/home' }
