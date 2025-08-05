@@ -55,7 +55,7 @@
               <span *ngIf="!company.license_url">N/A</span>
             </td>
             <td>
-              <button class="btn btn-sm btn-info me-2" (click)="editCompany(company)">Edit</button>
+              <button class="btn btn-sm btn-danger me-2" (click)="deleteCompany(company.id)">Delete</button>
               <button class="btn btn-sm" [ngClass]="{'btn-warning': company.is_verified, 'btn-success': !company.is_verified}" (click)="verifyCompany(company)">
                 {{ company.is_verified ? 'Unverify' : 'Verify' }}
               </button>

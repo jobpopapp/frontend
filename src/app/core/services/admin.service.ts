@@ -26,6 +26,10 @@ export class AdminService {
     return this.apiService.put<Company>(`/admin/companies/${id}/verify`, { is_verified });
   }
 
+  deleteCompany(id: string): Observable<ApiResponse<any>> {
+    return this.apiService.delete<any>(`/admin/companies/${id}`);
+  }
+
   getAnalytics(): Observable<ApiResponse<{ totalCompanies: number; activeSubscribers: number; inactiveSubscribers: number }>> {
     return this.apiService.get<{
       totalCompanies: number;

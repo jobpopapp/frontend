@@ -67,32 +67,24 @@ export class AdminCompaniesComponent implements OnInit {
     });
   }
 
-  editCompany(company: Company): void {
+  deleteCompany(companyId: string): void {
     Swal.fire({
-      title: 'Edit Company Profile',
-      html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Company Name" value="${company.name}">
-        <input id="swal-input2" class="swal2-input" placeholder="Email" value="${company.email}">
-        <input id="swal-input3" class="swal2-input" placeholder="Phone" value="${company.phone}">
-        <input id="swal-input4" class="swal2-input" placeholder="Country" value="${company.country}">
-      `,
-      focusConfirm: false,
-      preConfirm: () => {
-        const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
-        const email = (document.getElementById('swal-input2') as HTMLInputElement).value;
-        const phone = (document.getElementById('swal-input3') as HTMLInputElement).value;
-        const country = (document.getElementById('swal-input4') as HTMLInputElement).value;
-        return { name, email, phone, country };
-      }
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        this.adminService.updateCompanyProfile(company.id, result.value).subscribe({
+      if (result.isConfirmed) {
+        this.adminService.deleteCompany(companyId).subscribe({
           next: (response) => {
-            if (response.success && response.data) {
-              Swal.fire('Updated!', `Company ${company.name} profile has been updated.`, 'success');
+            if (response.success) {
+              Swal.fire('Deleted!', 'The company has been deleted.', 'success');
               this.loadCompanies(); // Refresh the list
             } else {
-              Swal.fire('Error', response.message || 'Failed to update company profile.', 'error');
+              Swal.fire('Error', response.message || 'Failed to delete company.', 'error');
             }
           },
           error: (err) => {
