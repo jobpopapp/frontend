@@ -21,6 +21,13 @@ export class AccountVerificationComponent {
   isDragOver = false;
   errorMessage = '';
 
+  selectedLicenseFile: File | null = null;
+  isUploadingLicense = false;
+  uploadLicenseSuccess = false;
+  uploadLicenseProgress = 0;
+  isDragOverLicense = false;
+  licenseErrorMessage = '';
+
   constructor(private apiService: ApiService, private authService: AuthService) {}
 
   onDragOver(event: DragEvent) {
@@ -113,6 +120,91 @@ export class AccountVerificationComponent {
         clearInterval(progressInterval);
         this.isUploading = false;
         this.errorMessage = error.message || 'Upload failed. Please try again.';
+      }
+    });
+  }
+
+  // License upload methods
+  onDragOverLicense(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOverLicense = true;
+  }
+
+  onDragLeaveLicense(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOverLicense = false;
+  }
+
+  onDropLicense(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOverLicense = false;
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.handleLicenseFile(files[0]);
+    }
+  }
+
+  onLicenseFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.handleLicenseFile(file);
+    }
+  }
+
+  handleLicenseFile(file: File) {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+
+    if (file.size > maxSize) {
+      this.licenseErrorMessage = 'File size must be less than 5MB';
+      return;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      this.licenseErrorMessage = 'Please upload a PDF, JPG, or PNG file';
+      return;
+    }
+
+    this.selectedLicenseFile = file;
+    this.licenseErrorMessage = '';
+  }
+
+  removeLicenseFile() {
+    this.selectedLicenseFile = null;
+    this.licenseErrorMessage = '';
+  }
+
+  uploadLicenseFile() {
+    if (!this.selectedLicenseFile) return;
+
+    this.isUploadingLicense = true;
+    this.uploadLicenseProgress = 0;
+
+    const progressInterval = setInterval(() => {
+      this.uploadLicenseProgress += 10;
+      if (this.uploadLicenseProgress >= 90) {
+        clearInterval(progressInterval);
+      }
+    }, 200);
+
+    this.apiService.uploadFile('/companies/license', this.selectedLicenseFile, undefined, 'license').subscribe({
+      next: (response) => {
+        clearInterval(progressInterval);
+        this.uploadLicenseProgress = 100;
+        setTimeout(() => {
+          this.isUploadingLicense = false;
+          this.uploadLicenseSuccess = true;
+          const company = this.authService.getCurrentCompany();
+          if (company) {
+            this.authService.sendDocumentUploadNotification(company.name, this.selectedLicenseFile?.name || 'unknown license');
+          }
+        }, 500);
+      },
+      error: (error) => {
+        clearInterval(progressInterval);
+        this.isUploadingLicense = false;
+        this.licenseErrorMessage = error.message || 'Upload failed. Please try again.';
       }
     });
   }

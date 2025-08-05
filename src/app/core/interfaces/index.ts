@@ -10,6 +10,7 @@ export interface Company {
   description?: string;
   is_verified: boolean;
   certificate_url?: string;
+  license_url?: string;
   created_at: string;
   updated_at: string;
 }

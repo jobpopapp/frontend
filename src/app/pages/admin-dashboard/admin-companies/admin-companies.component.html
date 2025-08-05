@@ -27,6 +27,7 @@
             <th>Country</th>
             <th>Verification Status</th>
             <th>Certificate</th>
+            <th>License</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -46,6 +47,12 @@
                 View Certificate
               </a>
               <span *ngIf="!company.certificate_url">N/A</span>
+            </td>
+            <td>
+              <a *ngIf="company.license_url" [href]="company.license_url" target="_blank" class="btn btn-sm btn-outline-primary">
+                View License
+              </a>
+              <span *ngIf="!company.license_url">N/A</span>
             </td>
             <td>
               <button class="btn btn-sm btn-info me-2" (click)="editCompany(company)">Edit</button>
