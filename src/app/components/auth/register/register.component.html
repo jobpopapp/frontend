@@ -177,7 +177,10 @@
               >Password is required</span
             >
             <span *ngIf="registerForm.get('password')?.errors?.['minlength']"
-              >Password must be at least 6 characters</span
+              >Password must be at least 8 characters</span
+            >
+            <span *ngIf="registerForm.get('password')?.errors?.['pattern']"
+              >Must contain uppercase, lowercase, and a number</span
             >
           </div>
         </div>

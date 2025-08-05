@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-account-verification',
@@ -20,7 +21,7 @@ export class AccountVerificationComponent {
   isDragOver = false;
   errorMessage = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private authService: AuthService) {}
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -102,6 +103,10 @@ export class AccountVerificationComponent {
         setTimeout(() => {
           this.isUploading = false;
           this.uploadSuccess = true;
+          const company = this.authService.getCurrentCompany();
+          if (company) {
+            this.authService.sendDocumentUploadNotification(company.name, this.selectedFile?.name || 'unknown document');
+          }
         }, 500);
       },
       error: (error) => {

@@ -16,15 +16,17 @@ export function passwordMatchValidator(): ValidatorFn {
       return null;
     }
     
-    if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return null; // Don't return form-level error, only field-level
-    } else {
-      // Clear the error if passwords match
+    // if passwords match, ensure the error is cleared
+    if (password.value === confirmPassword.value) {
       if (confirmPassword.hasError('passwordMismatch')) {
-        const errors = confirmPassword.errors;
-        delete errors!['passwordMismatch'];
-        confirmPassword.setErrors(Object.keys(errors!).length ? errors : null);
+        const errors = { ...confirmPassword.errors };
+        delete errors['passwordMismatch'];
+        confirmPassword.setErrors(Object.keys(errors).length > 0 ? errors : null);
+      }
+    } else {
+      // if passwords don't match, set the error, but only if the field isn't empty
+      if (confirmPassword.value) {
+         confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
       }
     }
     
@@ -112,11 +114,6 @@ export class RegisterComponent implements OnInit {
     this.registerForm.get('password')?.valueChanges.subscribe(password => {
       this.updatePasswordStrength(password);
     });
-
-    // Watch confirm password changes to trigger validation
-    this.registerForm.get('confirmPassword')?.valueChanges.subscribe(() => {
-      this.registerForm.updateValueAndValidity();
-    });
   }
 
   onSubmit(): void {
@@ -137,6 +134,7 @@ export class RegisterComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
+            this.authService.sendNewCompanyNotification(registerData.name, registerData.phone, registerData.email);
             this.successMessage = 'Account created successfully! Redirecting to dashboard...';
             setTimeout(() => {
               this.router.navigate(['/dashboard']);

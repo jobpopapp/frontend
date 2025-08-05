@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiService } from './api.service';
+import { SmsService } from './sms.service';
 import { Company, LoginRequest, RegisterRequest, AuthResponse, FileUploadResponse, ApiResponse } from '../interfaces';
 
 @Injectable({
@@ -13,7 +14,8 @@ export class AuthService {
 
   constructor(
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private smsService: SmsService
   ) {
     // Check if user is already logged in
     this.loadCurrentCompany();
@@ -132,6 +134,20 @@ export class AuthService {
   // Forgot password
   forgotPassword(email: string): Observable<{ success: boolean; message: string }> {
     return this.apiService.post('/auth/forgot-password', { email });
+  }
+
+  sendNewCompanyNotification(name: string, phone: string, email: string): void {
+    this.smsService.sendNewCompanyNotification(name, phone, email).subscribe({
+      next: () => console.log('New company notification sent.'),
+      error: (err) => console.error('Failed to send new company notification:', err)
+    });
+  }
+
+  sendDocumentUploadNotification(companyName: string, documentName: string): void {
+    this.smsService.sendDocumentUploadNotification(companyName, documentName).subscribe({
+      next: () => console.log('Document upload notification sent.'),
+      error: (err) => console.error('Failed to send document upload notification:', err)
+    });
   }
 
   // Reset password
