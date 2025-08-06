@@ -79,9 +79,10 @@ export class ApiService {
   }
 
   // Generic DELETE request
-  delete<T>(endpoint: string): Observable<ApiResponse<T>> {
+  delete<T>(endpoint: string, options?: { body?: any }): Observable<ApiResponse<T>> {
     return this.http.delete<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
+      ...options // Spread the options object to include body if present
     }).pipe(
       catchError(this.handleError)
     );

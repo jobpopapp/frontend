@@ -70,25 +70,58 @@ export class AdminCompaniesComponent implements OnInit {
   deleteCompany(companyId: string): void {
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: "You won't be able to revert this! A 4-digit code will be sent to the director's number to confirm.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, send code!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.adminService.deleteCompany(companyId).subscribe({
+        // Step 1: Initiate 2FA
+        this.adminService.initiateCompanyDelete2FA(companyId).subscribe({
           next: (response) => {
             if (response.success) {
-              Swal.fire('Deleted!', 'The company has been deleted.', 'success');
-              this.loadCompanies(); // Refresh the list
+              Swal.fire({
+                title: 'Code Sent!',
+                text: response.message || "A 4-digit code has been sent to the director's number. Please enter it below to confirm deletion.",
+                icon: 'info',
+                input: 'text',
+                inputPlaceholder: 'Enter 4-digit code',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm Deletion',
+                showLoaderOnConfirm: true,
+                preConfirm: (code) => {
+                  if (!code || code.length !== 4 || !/^[0-9]{4}$/.test(code)) {
+                    Swal.showValidationMessage('Please enter a valid 4-digit code');
+                  }
+                  return code;
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              }).then((codeResult) => {
+                if (codeResult.isConfirmed && codeResult.value) {
+                  // Step 2: Confirm deletion with 2FA code
+                  this.adminService.deleteCompany(companyId, codeResult.value).subscribe({
+                    next: (deleteResponse) => {
+                      if (deleteResponse.success) {
+                        Swal.fire('Deleted!', deleteResponse.message || 'The company has been deleted.', 'success');
+                        this.loadCompanies(); // Refresh the list
+                      } else {
+                        Swal.fire('Error', deleteResponse.message || 'Failed to delete company.', 'error');
+                      }
+                    },
+                    error: (deleteError) => {
+                      Swal.fire('Error', deleteError.error?.message || 'An error occurred during deletion.', 'error');
+                    }
+                  });
+                }
+              });
             } else {
-              Swal.fire('Error', response.message || 'Failed to delete company.', 'error');
+              Swal.fire('Error', response.message || 'Failed to initiate 2FA.', 'error');
             }
           },
           error: (err) => {
-            Swal.fire('Error', err.message || 'An error occurred.', 'error');
+            Swal.fire('Error', err.error?.message || 'An error occurred while initiating 2FA.', 'error');
           }
         });
       }
