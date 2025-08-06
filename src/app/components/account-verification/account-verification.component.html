@@ -118,6 +118,23 @@
               Certificate uploaded successfully! Please wait for verification or
               contact Job pop app admin.
             </div>
+            <!-- Action Buttons for Certificate -->
+            <div class="d-flex justify-content-between mt-4">
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="!selectedFile || isUploading"
+                (click)="uploadFile()"
+              >
+                <span
+                  *ngIf="isUploading"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                ></span>
+                <i *ngIf="!isUploading" class="bi bi-upload me-2"></i>
+                {{ isUploading ? "Uploading..." : "Upload Certificate" }}
+              </button>
+            </div>
           </div>
 
           <div class="col-md-4">
@@ -158,24 +175,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Action Buttons for Certificate -->
-        <div class="d-flex justify-content-between mt-4">
-          <button
-            type="button"
-            class="btn btn-primary"
-            [disabled]="!selectedFile || isUploading"
-            (click)="uploadFile()"
-          >
-            <span
-              *ngIf="isUploading"
-              class="spinner-border spinner-border-sm me-2"
-              role="status"
-            ></span>
-            <i *ngIf="!isUploading" class="bi bi-upload me-2"></i>
-            {{ isUploading ? "Uploading..." : "Upload Certificate" }}
-          </button>
         </div>
       </div>
 
@@ -279,6 +278,23 @@
               <i class="bi bi-check-circle me-2"></i>
               License uploaded successfully!
             </div>
+            <!-- Action Buttons for License -->
+            <div class="d-flex justify-content-end mt-4">
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="!selectedLicenseFile || isUploadingLicense"
+                (click)="uploadLicenseFile()"
+              >
+                <span
+                  *ngIf="isUploadingLicense"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                ></span>
+                <i *ngIf="!isUploadingLicense" class="bi bi-upload me-2"></i>
+                {{ isUploadingLicense ? "Uploading..." : "Upload License" }}
+              </button>
+            </div>
           </div>
 
           <div class="col-md-4">
@@ -308,24 +324,6 @@
               </ul>
             </div>
           </div>
-        </div>
-
-        <!-- Action Buttons for License -->
-        <div class="d-flex justify-content-end mt-4">
-          <button
-            type="button"
-            class="btn btn-primary"
-            [disabled]="!selectedLicenseFile || isUploadingLicense"
-            (click)="uploadLicenseFile()"
-          >
-            <span
-              *ngIf="isUploadingLicense"
-              class="spinner-border spinner-border-sm me-2"
-              role="status"
-            ></span>
-            <i *ngIf="!isUploadingLicense" class="bi bi-upload me-2"></i>
-            {{ isUploadingLicense ? "Uploading..." : "Upload License" }}
-          </button>
         </div>
       </div>
     </div>
