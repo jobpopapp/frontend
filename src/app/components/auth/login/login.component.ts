@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/interfaces';
+
+declare var google: any;
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +34,49 @@ export class LoginComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
     }
+  }
+
+  ngAfterViewInit(): void {
+    // Initialize Google Sign-In after the view has been initialized
+    google.accounts.id.initialize({
+      client_id: '998086120823-8sc67lt7a9nfev174ia8ca1tarr2ff76.apps.googleusercontent.com', // Replace with your actual Google Client ID
+      callback: (response: any) => this.handleGoogleLogin(response)
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById("google-btn"),
+      { size: "large", type: "standard", shape: "rectangular", text: "signin_with", width: "300" }
+    );
+  }
+
+  handleGoogleLogin(response: any): void {
+    this.ngZone.run(() => {
+      if (response.credential) {
+        this.isLoading = true;
+        this.errorMessage = '';
+        this.authService.googleLogin(response.credential).subscribe({
+          next: (res) => {
+            this.isLoading = false;
+            if (res.success && res.data && res.data.company && res.data.company.email) {
+              const userEmail = res.data.company.email.toLowerCase();
+              if (userEmail === 'jobpopapp@gmail.com' || userEmail === 'admin@jobpop.app') {
+                this.router.navigate(['/admin/dashboard']);
+              } else {
+                this.router.navigate(['/dashboard']);
+              }
+            } else {
+              this.errorMessage = res.message || 'Google login failed: Missing user data.';
+            }
+          },
+          error: (err) => {
+            this.isLoading = false;
+            this.errorMessage = err.error?.message || 'An error occurred during Google login. Please try again.';
+          }
+        });
+      } else {
+        this.errorMessage = 'Google login failed: No credential received.';
+      }
+    });
   }
 
   private initializeForm(): void {

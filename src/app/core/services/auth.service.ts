@@ -51,6 +51,18 @@ export class AuthService {
     );
   }
 
+  // Google Login
+  googleLogin(idToken: string): Observable<ApiResponse<AuthResponse>> {
+    return this.apiService.post<AuthResponse>('/auth/google-login', { idToken }).pipe(
+      tap(response => {
+        if (response.success && response.data?.token && response.data?.company) {
+          this.apiService.setToken(response.data.token);
+          this.currentCompanySubject.next(response.data.company);
+        }
+      })
+    );
+  }
+
   // Register company
   register(companyData: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
     return this.apiService.post<AuthResponse>('/auth/register', companyData).pipe(
