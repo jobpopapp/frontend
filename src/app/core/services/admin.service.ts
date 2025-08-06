@@ -61,4 +61,8 @@ export class AdminService {
   updateSubscription(id: string, subscriptionData: Partial<Subscription>): Observable<ApiResponse<Subscription>> {
     return this.apiService.put<Subscription>(`/admin/subscriptions/${id}`, subscriptionData);
   }
+
+  getSubscriptionPlanAnalytics(): Observable<ApiResponse<{ plan_type: string; count: number; }[]>> {
+    return this.apiService.get<{ plan_type: string; count: number; }[]>(`/admin/analytics/subscription-plans`);
+  }
 }

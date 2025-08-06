@@ -57,6 +57,7 @@ export class AdminAnalyticsComponent implements OnInit {
     activeSubscribers: 0,
     inactiveSubscribers: 0
   };
+  subscriptionPlanAnalytics: { plan_type: string; count: number; }[] = []; // Supabase RPC returns 'count' for aggregate functions
   loading = true;
   error: string | null = null;
 
@@ -64,6 +65,7 @@ export class AdminAnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAnalytics();
+    this.loadSubscriptionPlanAnalytics();
   }
 
   loadAnalytics(): void {
@@ -80,6 +82,23 @@ export class AdminAnalyticsComponent implements OnInit {
       error: (err) => {
         this.error = err.message || 'An error occurred while fetching analytics.';
         this.loading = false;
+      }
+    });
+  }
+
+  loadSubscriptionPlanAnalytics(): void {
+    this.adminService.getSubscriptionPlanAnalytics().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          console.log("Frontend received subscription plan analytics:", response.data);
+          this.subscriptionPlanAnalytics = [...response.data]; // Force re-render by creating a new array reference
+        } else {
+          // Handle error for this specific analytics call if needed
+          console.error('Failed to load subscription plan analytics:', response.message);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching subscription plan analytics:', err);
       }
     });
   }

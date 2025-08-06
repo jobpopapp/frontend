@@ -9,3 +9,73 @@
   font-weight: bold;
   color: #007bff; /* Primary color */
 }
+
+.subscription-card {
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+
+  .card-body {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+
+    i {
+      font-size: 36px;
+      color: white;
+    }
+  }
+
+  .card-title {
+    color: white;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+
+  .card-text.display-4 {
+    color: white;
+    font-size: 3rem;
+  }
+}
+
+/* Colorful backgrounds for different plan types */
+.subscription-card.card-premium {
+  background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%); /* Purple to Blue */
+}
+
+.subscription-card.card-standard {
+  background: linear-gradient(45deg, #00c6ff 0%, #0072ff 100%); /* Light Blue to Dark Blue */
+}
+
+.subscription-card.card-basic {
+  background: linear-gradient(45deg, #ff7e5f 0%, #feb47b 100%); /* Orange to Peach */
+}
+
+.subscription-card.card-per_job {
+  background: linear-gradient(45deg, #13547a 0%, #80d0c7 100%); /* Dark Teal to Light Teal */
+}
+
+.subscription-card.card-monthly {
+  background: linear-gradient(45deg, #f7971e 0%, #ffd200 100%); /* Orange to Yellow */
+}
+
+.subscription-card.card-annual {
+  background: linear-gradient(45deg, #ee0979 0%, #ff6a00 100%); /* Pink to Orange */
+}

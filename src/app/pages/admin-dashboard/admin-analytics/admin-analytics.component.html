@@ -46,6 +46,32 @@
         </div>
       </div>
     </div>
+
+    <h3 class="mt-5 mb-3">Subscription Plan Breakdown</h3>
+    <pre>Subscription Plan Analytics Data: {{ subscriptionPlanAnalytics | json }}</pre>
+    <div *ngIf="subscriptionPlanAnalytics.length === 0 && !loading" class="alert alert-info" role="alert">
+      No subscription plan data available.
+    </div>
+    <div *ngIf="subscriptionPlanAnalytics.length > 0" class="row">
+      <div *ngFor="let plan of subscriptionPlanAnalytics" class="col-md-4 mb-4">
+        <div class="card text-center p-3 shadow-sm subscription-card" [ngClass]="'card-' + plan.plan_type">
+          <div class="card-body">
+            <div class="icon-circle">
+              <i class="bi" [ngClass]="{
+                'bi-gem': plan.plan_type === 'premium',
+                'bi-star': plan.plan_type === 'standard',
+                'bi-lightning': plan.plan_type === 'basic',
+                'bi-cash': plan.plan_type === 'per_job',
+                'bi-calendar-check': plan.plan_type === 'monthly',
+                'bi-calendar-event': plan.plan_type === 'annual'
+              }"></i>
+            </div>
+            <h5 class="card-title mt-3">{{ plan.plan_type | titlecase }} Subscribers</h5>
+            <p class="card-text display-4">{{ plan.subscription_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
