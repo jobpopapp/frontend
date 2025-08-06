@@ -38,26 +38,54 @@
             <td>{{ company.phone }}</td>
             <td>{{ company.country }}</td>
             <td>
-              <span class="badge" [ngClass]="{'bg-success': company.is_verified, 'bg-warning': !company.is_verified}">
-                {{ company.is_verified ? 'Verified' : 'Not Verified' }}
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': company.is_verified,
+                  'bg-warning': !company.is_verified
+                }"
+              >
+                {{ company.is_verified ? "Verified" : "Not Verified" }}
               </span>
             </td>
             <td>
-              <a *ngIf="company.certificate_url" [href]="company.certificate_url" target="_blank" class="btn btn-sm btn-outline-primary">
+              <a
+                *ngIf="company.certificate_url"
+                [href]="company.certificate_url"
+                target="_blank"
+                class="btn btn-sm btn-outline-primary"
+              >
                 View Certificate
               </a>
               <span *ngIf="!company.certificate_url">N/A</span>
             </td>
             <td>
-              <a *ngIf="company.license_url" [href]="company.license_url" target="_blank" class="btn btn-sm btn-outline-primary">
+              <a
+                *ngIf="company.license_url"
+                [href]="company.license_url"
+                target="_blank"
+                class="btn btn-sm btn-outline-primary"
+              >
                 View License
               </a>
               <span *ngIf="!company.license_url">N/A</span>
             </td>
             <td>
-              <button class="btn btn-sm btn-danger me-2" (click)="deleteCompany(company.id)">Delete</button>
-              <button class="btn btn-sm" [ngClass]="{'btn-warning': company.is_verified, 'btn-success': !company.is_verified}" (click)="verifyCompany(company)">
-                {{ company.is_verified ? 'Unverify' : 'Verify' }}
+              <button
+                class="btn btn-sm btn-danger me-2"
+                (click)="deleteCompany(company.id)"
+              >
+                Delete
+              </button>
+              <button
+                class="btn btn-sm"
+                [ngClass]="{
+                  'btn-warning': company.is_verified,
+                  'btn-success': !company.is_verified
+                }"
+                (click)="verifyCompany(company)"
+              >
+                {{ company.is_verified ? "Unverify" : "Verify" }}
               </button>
             </td>
           </tr>
