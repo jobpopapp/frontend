@@ -63,6 +63,10 @@ export class AuthService {
     );
   }
 
+
+
+
+
   // Register company
   register(companyData: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
     return this.apiService.post<AuthResponse>('/auth/register', companyData).pipe(

@@ -912,10 +912,21 @@
   }
 }
 
+
+
+
+
+.google-signin-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 // Responsive Design
 @media (max-width: 968px) {
   .adobe-login-layout {
-    display: block;
+    flex-direction: column;
   }
   
   .form-section {

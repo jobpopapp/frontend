@@ -70,7 +70,8 @@ export class LoginComponent implements OnInit {
           },
           error: (err) => {
             this.isLoading = false;
-            this.errorMessage = err.error?.message || 'An error occurred during Google login. Please try again.';
+            console.error("Frontend received error:", err);
+            this.errorMessage = err.message || 'An error occurred during Google login. Please try again.';
           }
         });
       } else {
