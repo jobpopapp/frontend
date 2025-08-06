@@ -383,7 +383,7 @@
                     jobForm.get('email')?.touched
                   "
                 >
-                  Valid email is required
+                  Please enter a valid email address if provided.
                 </div>
               </div>
 
@@ -410,7 +410,7 @@
                     jobForm.get('phone')?.touched
                   "
                 >
-                  Phone number is required
+                  Please enter a valid phone number if provided.
                 </div>
               </div>
 
@@ -454,9 +454,16 @@
                     jobForm.get('application_link')?.touched
                   "
                 >
-                  Valid URL is required
+                  Please enter a valid URL if provided.
                 </div>
               </div>
+            </div>
+            <div
+              class="alert alert-warning mt-3"
+              *ngIf="jobForm.errors?.['atLeastOneRequired'] && jobForm.touched"
+            >
+              Please provide at least one application detail (Email, Phone, or
+              Application Link).
             </div>
           </div>
         </div>
@@ -616,7 +623,7 @@
 
           <button
             type="button"
-            class="btn btn-outline-primary"
+            class="btn btn-outline-primary d-none"
             (click)="previewJob()"
             [disabled]="jobForm.invalid"
           >

@@ -123,9 +123,9 @@ export class JobFormComponent implements OnInit {
       salary: [''],
       deadline: ['', [Validators.required, this.futureDateValidator]],
       is_foreign: [false],
-      email: [''],
-      phone: [''],
-      application_link: [''],
+      email: ['', Validators.email],
+      phone: ['', Validators.pattern(/^\+?[1-9]\d{1,14}$/)],
+      application_link: ['', Validators.pattern('https?://.+')],
       // Legacy fields for compatibility with existing interface
       description: [''],
       location: [''],
@@ -135,7 +135,7 @@ export class JobFormComponent implements OnInit {
       experience_level: [''],
       visibility: ['public'],
       whatsapp: ['']
-    });
+    }, { validators: this.atLeastOneApplicationDetailValidator });
         // Watch for application method changes
         this.setupApplicationMethodValidators();
         // Set is_foreign based on country selection
@@ -428,6 +428,17 @@ export class JobFormComponent implements OnInit {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString();
+  }
+
+  atLeastOneApplicationDetailValidator(control: AbstractControl): ValidationErrors | null {
+    const email = control.get('email')?.value;
+    const phone = control.get('phone')?.value;
+    const applicationLink = control.get('application_link')?.value;
+
+    if (!email && !phone && !applicationLink) {
+      return { atLeastOneRequired: true };
+    }
+    return null;
   }
 
   getFormCompletionPercentage(): number {
