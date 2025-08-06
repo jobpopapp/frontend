@@ -15,11 +15,13 @@ import { AdminAnalyticsComponent } from './pages/admin-dashboard/admin-analytics
 import { AdminSubscriptionPlansComponent } from './pages/admin-dashboard/admin-subscription-plans/admin-subscription-plans.component';
 import { AdminSubscriptionsComponent } from './pages/admin-dashboard/admin-subscriptions/admin-subscriptions.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   // Public routes
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomepageComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   
