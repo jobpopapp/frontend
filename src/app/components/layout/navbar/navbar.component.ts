@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { Company } from '../../../core/interfaces';
+import { SidebarService } from '../../../core/services/sidebar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +21,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private sidebarService: SidebarService
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +35,7 @@ export class NavbarComponent implements OnInit {
   }
 
   toggleSidebar(): void {
-    this.sidebarToggle.emit();
+    this.sidebarService.toggle();
   }
 
   getCompanyInitials(): string {

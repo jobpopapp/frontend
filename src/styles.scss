@@ -382,32 +382,7 @@ h6 {
 }
 
 // Layout improvements (Adobe-inspired dashboard layout)
-.dashboard-layout {
-  display: flex;
-  min-height: 100vh;
-  
-  .sidebar {
-    width: 280px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1000;
-    overflow-y: auto;
-  }
-  
-  .main-content {
-    flex: 1;
-    margin-left: 280px;
-    min-height: 100vh;
-    background: var(--background-light);
-    
-    // Responsive adjustments
-    @media (max-width: 768px) {
-      margin-left: 0;
-    }
-  }
-}
+
 
 // Sidebar improvements (Adobe-inspired)
 .sidebar {
@@ -770,7 +745,34 @@ h6 {
   color: #333 !important;
 }
 
-.custom-swal-html-container {
-  font-size: 1rem !important;
-  color: #555 !important;
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  min-height: 100vh;
+  background: var(--background-light);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    margin-left: 280px;
+  }
+
+  .sidebar.show + .main-content {
+    margin-left: 280px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar.show + .main-content {
+    margin-left: 0;
+  }
 }

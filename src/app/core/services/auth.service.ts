@@ -19,6 +19,9 @@ export class AuthService {
   ) {
     // Check if user is already logged in
     this.loadCurrentCompany();
+    this.currentCompany$.subscribe(company => {
+      console.log('[AuthService] currentCompany changed:', company);
+    });
   }
 
   // Load current company from localStorage

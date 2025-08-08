@@ -2,16 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { ApiService } from '../core/services/api.service';
+import { environment } from '../../environments/environment'; // Import environment
 
 export type SubscriptionStatusString = 'active' | 'expired' | 'none';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
-  private apiUrl = '/api/subscription';
+  // Use the full path from the environment file
+  private apiUrl = `${environment.apiUrl}/subscription`;
 
   constructor(private http: HttpClient, private apiService: ApiService) {}
 
   getPlans(): Observable<any> {
+    // Use the full path for all calls
     return this.http.get<any>(`${this.apiUrl}/plans`);
   }
 
@@ -23,7 +26,8 @@ export class SubscriptionService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.post(`/api/pesapal/submit-order`, payload, { headers, responseType: 'json' });
+    // Use the full path for the pesapal endpoint as well
+    return this.http.post(`${environment.apiUrl}/pesapal/submit-order`, payload, { headers, responseType: 'json' });
   }
 
   getSubscriptionStatus(): Observable<SubscriptionStatusString> {
@@ -38,7 +42,7 @@ export class SubscriptionService {
   }
 
   verifyPayment(orderTrackingId: string) {
-    return this.http.get<any>(`/api/subscription/verify-payment?orderTrackingId=${orderTrackingId}`);
+    return this.http.get<any>(`${this.apiUrl}/verify-payment?orderTrackingId=${orderTrackingId}`);
   }
 
   refreshSubscription(companyId: string): Observable<any> {

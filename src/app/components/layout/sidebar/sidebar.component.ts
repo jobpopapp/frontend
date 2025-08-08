@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SubscriptionService } from '../../../core/services/subscription.service';
+import { SidebarService } from '../../../core/services/sidebar.service';
 import { Subscription } from '../../../core/interfaces';
 import { Company } from '../../../core/interfaces';
 import Swal from 'sweetalert2';
@@ -24,14 +25,20 @@ export class SidebarComponent implements OnInit {
   daysLeft = 0;
   private currentSubscription: Subscription | null = null;
   isVerified = false;
+  isSidebarOpen = false;
 
   constructor(
     private authService: AuthService,
     private subscriptionService: SubscriptionService,
-    private router: Router
+    private router: Router,
+    private sidebarService: SidebarService
   ) {}
 
   ngOnInit(): void {
+    this.sidebarService.sidebarOpen$.subscribe(isOpen => {
+      this.isSidebarOpen = isOpen;
+    });
+
     // Subscribe to current company
     this.authService.currentCompany$.subscribe(company => {
       this.currentCompany = company;

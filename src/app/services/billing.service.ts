@@ -39,12 +39,15 @@ export class BillingService {
     if (!companyId) {
       throw new Error('Company ID not available.');
     }
-    const dataToSend = { ...addressData, company_id: companyId };
+    // Create a clean copy of the data to send
+    const dataToSend: Partial<BillingAddress> = { ...addressData, company_id: companyId };
 
-    if (addressData.id) {
+    if (dataToSend.id) {
       // Update existing address
-      return this.http.put<BillingAddress>(`${this.apiUrl}/${addressData.id}`, dataToSend);
+      return this.http.put<BillingAddress>(`${this.apiUrl}/${dataToSend.id}`, dataToSend);
     } else {
+      // For new addresses, explicitly delete the id property to avoid sending `id: undefined`
+      delete dataToSend.id;
       // Create new address
       return this.http.post<BillingAddress>(this.apiUrl, dataToSend);
     }

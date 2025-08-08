@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-billing-address',
@@ -37,7 +38,7 @@ export class BillingAddressComponent implements OnInit {
     };
   }
 
-  constructor(private billingService: BillingService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
+  constructor(private billingService: BillingService, private cdr: ChangeDetectorRef, private ngZone: NgZone, private authService: AuthService) {
     console.log('[BillingAddressComponent] Constructor - loading:', this.loading);
   }
 
@@ -45,6 +46,12 @@ export class BillingAddressComponent implements OnInit {
     console.log('[BillingAddressComponent] ngOnInit - Before setting loading to true:', this.loading);
     this.loading = true;
     console.log('[BillingAddressComponent] ngOnInit - After setting loading to true:', this.loading);
+    const companyId = this.authService.getCurrentCompanyId();
+    if (!companyId) {
+      console.error('Company ID not available. Cannot fetch billing address.');
+      this.loading = false;
+      return;
+    }
     this.billingService.getBillingAddress().subscribe({
       next: (address) => {
         if (address) {
@@ -70,54 +77,89 @@ export class BillingAddressComponent implements OnInit {
   }
 
   saveAddress() {
-    // Always ensure billingAddress is never null after save
     console.log('[BillingAddressComponent] saveAddress - Before setting loading to true:', this.loading);
     this.loading = true;
     console.log('[BillingAddressComponent] saveAddress - After setting loading to true:', this.loading);
 
-    const addressToSend = { ...this.billingAddress };
-
-    // Validate country_code format
-    if (addressToSend.country_code && addressToSend.country_code.length !== 2) {
+    const companyId = this.authService.getCurrentCompanyId();
+    if (!companyId) {
       this.ngZone.run(() => {
         this.loading = false;
         this.success = false;
-        this.error = 'Country Code must be a 2-letter ISO code (e.g., US, UG).';
+        this.error = 'Company ID not available. Please log in again.';
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: this.error ?? '',
+        });
       });
       return;
     }
 
-    console.log('[BillingAddressComponent] Saving billing address:', addressToSend);
-    this.billingService.saveBillingAddress(addressToSend).subscribe({
-      next: () => {
-        this.ngZone.run(() => {
-          this.loading = false;
-          this.success = true;
-          this.error = null;
-          // Do not reset the form on success, allow user to see saved data
-          // this.billingAddress = this.getDefaultBillingAddress();
-          Swal.fire({
-            icon: 'success',
-            title: 'Address Saved!',
-            text: 'Your billing address has been successfully saved.',
-            showConfirmButton: false,
-            timer: 1500
+    const addressToSend: BillingAddress = { ...this.billingAddress, company_id: companyId };
+
+    if (this.billingAddress.id) {
+      // If ID exists, it's an update
+      this.billingService.saveBillingAddress(addressToSend).subscribe({
+        next: () => {
+          this.ngZone.run(() => {
+            this.loading = false;
+            this.success = true;
+            this.error = null;
+            Swal.fire({
+              icon: 'success',
+              title: 'Address Saved!',
+              text: 'Your billing address has been successfully saved.',
+              showConfirmButton: false,
+              timer: 1500
+            });
           });
-        });
-      },
-      error: (err: any) => {
-        this.ngZone.run(() => {
-          this.loading = false;
-          this.success = false;
-          this.error = err?.error?.message || 'Failed to save billing address.';
-          if (!this.billingAddress) this.billingAddress = this.getDefaultBillingAddress();
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: this.error ?? '',
+        },
+        error: (err: any) => {
+          this.ngZone.run(() => {
+            this.loading = false;
+            this.success = false;
+            this.error = err?.error?.message || 'Failed to save billing address.';
+            if (!this.billingAddress) this.billingAddress = this.getDefaultBillingAddress();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: this.error ?? '',
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    } else {
+      // If no ID, it's a new address
+      this.billingService.saveBillingAddress(addressToSend).subscribe({
+        next: () => {
+          this.ngZone.run(() => {
+            this.loading = false;
+            this.success = true;
+            this.error = null;
+            Swal.fire({
+              icon: 'success',
+              title: 'Address Saved!',
+              text: 'Your billing address has been successfully saved.',
+              showConfirmButton: false,
+              timer: 1500
+            });
+          });
+        },
+        error: (err: any) => {
+          this.ngZone.run(() => {
+            this.loading = false;
+            this.success = false;
+            this.error = err?.error?.message || 'Failed to save billing address.';
+            if (!this.billingAddress) this.billingAddress = this.getDefaultBillingAddress();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: this.error ?? '',
+            });
+          });
+        }
+      });
+    }
   }
 }

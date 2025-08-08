@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Params, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { JobService } from '../../core/services/job.service';
 import { SubscriptionService } from '../../core/services/subscription.service';
 import { NavbarComponent } from '../../components/layout/navbar/navbar.component';
 import { SidebarComponent } from '../../components/layout/sidebar/sidebar.component';
-import {
-  AccountVerificationComponent
-} from '../../components/account-verification/account-verification.component';
-import { JobListComponent } from '../../components/job-list/job-list.component';
-import { JobFormComponent } from '../../components/job-form/job-form.component';
 import { JobDetailModalComponent } from '../../components/job-detail-modal/job-detail-modal.component';
 import { Company, Job, DashboardStats, JobCategory } from '../../core/interfaces';
 
@@ -20,12 +15,8 @@ import { Company, Job, DashboardStats, JobCategory } from '../../core/interfaces
   imports: [
     CommonModule,
     RouterModule,
-    TitleCasePipe,
     NavbarComponent,
     SidebarComponent,
-    AccountVerificationComponent,
-    JobListComponent,
-    JobFormComponent,
     JobDetailModalComponent,
   ],
   templateUrl: './dashboard.component.html',
