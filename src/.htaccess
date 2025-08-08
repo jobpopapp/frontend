@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# -- The following rule is needed to prevent an infinite redirect loop --
+RewriteCond %{REQUEST_URI} !^/index\.html$
+
+# -- The following two lines are the core of the solution --
+# If the requested resource is not a file that exists on the server
+RewriteCond %{REQUEST_FILENAME} !-f
+# And the requested resource is not a directory that exists on the server
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# -- Then, redirect all other requests to the index.html file --
+RewriteRule . /index.html [L]
